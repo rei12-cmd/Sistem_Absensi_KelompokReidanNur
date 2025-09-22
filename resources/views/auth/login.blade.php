@@ -72,7 +72,7 @@
 
         <div class="form-content">
             {{-- LOGIN FORM --}}
-            <form class="login-form" id="loginForm" method="POST" action="">
+            <form class="login-form" id="loginForm" method="POST" action="{{ route('loginStore') }}">
                 @csrf
                 <h2>Login</h2>
 
