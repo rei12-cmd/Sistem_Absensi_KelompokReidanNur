@@ -105,7 +105,7 @@
                 </div>
 
                 <button type="submit" class="form-button">Login</button>
-                <p class="toggle-link" id="showRegister">Belum punya akun? Registrasi di sini.</p>
+               
             </form>
 
 
