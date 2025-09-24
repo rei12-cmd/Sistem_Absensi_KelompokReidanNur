@@ -32,38 +32,55 @@
             overflow: hidden;
         }
         .form-content { transition: transform 0.6s ease-in-out; }
-        .login-form, .register-form {
+        .login-form {
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
-        .register-form {
-            position: absolute;
-            top: 40px;
-            left: 0;
-            width: 100%;
-            padding: 0 40px;
-            transform: translateX(100%);
-        }
-        .container.active .login-form { transform: translateX(-100%); }
-        .container.active .register-form { transform: translateX(0); }
         .login-logo { width:100px; margin-bottom:20px; }
         .form-group { text-align: left; }
-        .form-group label { font-weight:500; color:#555; display:block; margin-bottom:5px; }
-        .form-group input, .form-group select {
-            width:100%; padding:10px; border:1px solid #ddd; border-radius:5px; font-size:16px;
+        .form-group label {
+            font-weight:500; color:#555;
+            display:block; margin-bottom:5px;
+        }
+        .form-group input {
+            width:100%; padding:10px 12px;
+            border:1px solid #ddd;
+            border-radius:5px;
+            font-size:16px;
+            box-sizing: border-box;
         }
         .form-button {
-            background-color:#4a86e8; color:#fff; padding:12px; border:none; border-radius:5px; font-size:16px; font-weight:600; cursor:pointer;
+            background-color:#4a86e8; color:#fff;
+            padding:12px; border:none; border-radius:5px;
+            font-size:16px; font-weight:600; cursor:pointer;
+            width: 100%;
         }
         .form-button:hover { background-color:#3b6ac2; }
-        .toggle-link { font-size:14px; color:#4a86e8; margin-top:10px; cursor:pointer; }
         .password-container { position:relative; }
-        .password-container input { padding-right:40px; }
-        .toggle-password { position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer; color:#888; font-size:1.1em; }
+        .password-container input {
+            padding-right:42px; /* kasih ruang buat icon */
+        }
+        .toggle-password {
+            position:absolute;
+            right:12px; top:50%;
+            transform:translateY(-50%);
+            cursor:pointer;
+            color:#888;
+            font-size:1.1em;
+            line-height:1;
+        }
         .toggle-password:hover { color:#333; }
-        .alert { background:#fdecea; color:#611; padding:10px; border-radius:6px; margin-bottom:12px; text-align:left; }
-        .field-error { color:#b00020; font-size:0.9rem; margin-top:6px; }
+        .alert {
+            background:#fdecea; color:#611;
+            padding:10px; border-radius:6px;
+            margin-bottom:12px; text-align:left;
+        }
+        .field-error {
+            color:#b00020;
+            font-size:0.9rem;
+            margin-top:6px;
+        }
     </style>
 </head>
 <body>
@@ -89,7 +106,9 @@
 
                 <div class="form-group">
                     <label for="login-field">Username / Email</label>
-                    <input id="login-field" name="login" type="text" placeholder="Username atau Email" value="{{ old('login') }}" required autofocus>
+                    <input id="login-field" name="login" type="text"
+                           placeholder="Username atau Email"
+                           value="{{ old('login') }}" required autofocus>
                     @error('login')
                         <div class="field-error">{{ $message }}</div>
                     @enderror
@@ -97,20 +116,35 @@
 
                 <div class="form-group password-container">
                     <label for="login-password">Password</label>
-                    <input id="login-password" name="password" type="password" placeholder="Password" required>
-                    <i class="fas fa-eye-slash toggle-password" data-target="#login-password"></i>
+                    <input id="login-password" name="password" type="password"
+                           placeholder="Password" required>
+                   
                     @error('password')
                         <div class="field-error">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <button type="submit" class="form-button">Login</button>
-<<<<<<< HEAD
-               
-=======
->>>>>>> 82e757b8c6a350ddaa2185462cf6bb771d845802
             </form>
         </div>
     </div>
+
+    <script>
+        // Toggle show/hide password
+        document.querySelectorAll('.toggle-password').forEach(function (el) {
+            el.addEventListener('click', function () {
+                const target = document.querySelector(el.dataset.target);
+                if (target.type === "password") {
+                    target.type = "text";
+                    el.classList.remove("fa-eye-slash");
+                    el.classList.add("fa-eye");
+                } else {
+                    target.type = "password";
+                    el.classList.remove("fa-eye");
+                    el.classList.add("fa-eye-slash");
+                }
+            });
+        });
+    </script>
 </body>
 </html>
