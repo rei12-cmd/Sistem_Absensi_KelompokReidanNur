@@ -1,14 +1,14 @@
 @extends('layout')
 
-@section('title', 'Dashboard')
+@section('title', 'Siswa')
 
 @section('breadcumb')
     <div class="row">
-        <div class="col-sm-6"><h3 class="mb-0">Dashboard</h3></div>
+        <div class="col-sm-6"><h3 class="mb-0">Siswa</h3></div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-end">
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Siswa</li>
             </ol>
         </div>
     </div>
@@ -18,12 +18,12 @@
     <div class="row">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Dashboard</h3>
+                <h3 class="card-title">Siswa</h3>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <h1>Dashboard</h1>
+                        <h1>Siswa</h1>
                     </div>
                 </div>
             </div>

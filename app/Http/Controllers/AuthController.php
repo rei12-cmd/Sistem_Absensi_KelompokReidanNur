@@ -11,26 +11,36 @@ class AuthController extends Controller
 {
     public function index(): View
     {
-      return view('auth.login');
+        return view('auth.login');
     }
 
     public function login(Request $request): RedirectResponse
     {
-      $request->validate([
-        'login'     => 'required',
-        'password'  => 'required',
-      ]);
+        $request->validate([
+            'email'     => ['required', 'email'],
+            'password'  => ['required'],
+        ]);
 
-      $login = filter_var($request->input('login'), FILTER_VALIDATE_EMAIL) ? 'email': 'username';
+        $remember = $request->has('remember') ? true : false;
 
-      if (Auth::attempt([$login => $request->input('login'), 'password' => $request->input('password')])) {
-        $request->session()->regenerate();
+        if (Auth::attempt($request->only('email', 'password'), $remember)) {
+            $request->session()->regenerate();
 
-        return redirect()->intended('dashboard')->with('success', 'Selamat datang kembali');
-      }
+            return redirect()->intended('/')->with('success', 'Selamat Datang Kembali!!');
+        }
 
-      return back()->withErrors([
-        'error' => 'Login gagal',
-      ])->onlyInput('error');
+        return back()->withErrors([
+            'email'     => 'Email atau password salah',
+        ])->onlyInput('email');
+    }
+
+    public function logout(Request $request): RedirectResponse
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login')->with('success', 'Sampai jumpa kembali!!');
     }
 }

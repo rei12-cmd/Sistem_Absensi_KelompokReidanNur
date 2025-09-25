@@ -1,0 +1,95 @@
+@extends('layout')
+
+@section('title', 'Jurusan')
+
+@section('breadcumb')
+    <div class="row">
+        <div class="col-sm-6"><h3 class="mb-0">Jurusan</h3></div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-end">
+                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Jurusan</li>
+            </ol>
+        </div>
+    </div>
+@endsection
+
+@section('content')
+    <div class="row">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Jurusan</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                        <table id="bulansekarang-table" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama</th>
+                                    <th>Tindakan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($jurusan as $ac)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $ac['nama'] }}</td>
+                                        <td>
+                                            {{-- <a href="{{ route('jurusan.edit', $ac['id']) }}" class="btn text-bg-dark btn-sm">
+                                                <i class="bi bi-pencil-square"></i>
+                                                Edit
+                                            </a>
+
+                                            <form id="delete-form-{{ $ac->id }}" action="{{ route('jurusan.destroy', $ac->id) }}" method="POST" class="d-inline-block">
+                                                @csrf
+                                                @method('DELETE')
+                                                <a href="#" class="btn btn-rounded btn-danger btn-sm" onclick="confirmDelete({{ $ac->id }})">
+                                                    <i class="bi bi-trash"></i>
+                                                    Hapus
+                                                </a>
+                                            </form> --}}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+@endpush
+
+@push('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#bulansekarang-table').DataTable();
+        });
+    </script>
+
+    <script>
+        function confirmDelete(accountId) {
+            Swal.fire({
+                title: "Apakah Anda yakin?",
+                text: "Data yang dihapus tidak bisa dikembalikan! Termasuk semua data transaksi yang terhubung",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Ya, hapus!",
+                cancelButtonText: "Batal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form-' + accountId).submit();
+                }
+            });
+        }
+    </script>
+@endpush
