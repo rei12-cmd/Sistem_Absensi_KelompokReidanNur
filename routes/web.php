@@ -17,35 +17,42 @@ Route::post('/login', [AuthController::class, 'login'])->name('loginStore');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function() {
-  Route::get('/', function() {
-    return view('dashboard');
-  })->name('dashboard');
+    Route::get('/', function() {
+        return view('dashboard');
+    })->name('dashboard');
 
-  Route::group(['middleware' => ['role:admin']], function () {
-    Route::get('/jurusan', [JurusanController::class, 'index'])->name('jurusan');
+    Route::group(['middleware' => ['role:admin']], function () {
+        // Route resource untuk jurusan
+        Route::resource('jurusan', JurusanController::class);
 
-    Route::get('/kelas', [KelasController::class, 'index'])->name('kelas');
-    Route::get('/guru', [GuruController::class, 'index'])->name('guru');
-    Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa');
-    Route::get('/wali', [WaliController::class, 'index'])->name('wali');
-    Route::get('/mapel', [MataPelajaranController::class, 'index'])->name('mapel');
-    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal');
-  });
+        // Route resource untuk kelas
+        Route::resource('kelas', KelasController::class);
 
-  Route::group(['middleware' => ['role:admin|guru']], function () {
-    Route::get('/laporanabsensi', [LaporanAbsensiController::class, 'index'])->name('laporanabsensi');
-  });
+        // Alias lama biar tidak error di view lama
+        Route::get('/kelas', [KelasController::class, 'index'])->name('kelas');
 
-  Route::group(['middleware' => ['role:guru']], function () {
-    Route::get('/jadwalsaya', [JadwalController::class, 'jadwalsaya'])->name('jadwalsaya');
-    Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi');
-  });
+        // Alias lama untuk controller lain
+        Route::get('/guru', [GuruController::class, 'index'])->name('guru');
+        Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa');
+        Route::get('/wali', [WaliController::class, 'index'])->name('wali');
+        Route::get('/mapel', [MataPelajaranController::class, 'index'])->name('mapel');
+        Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal');
+    });
 
-  Route::group(['middleware' => ['role:siswa']], function () {
-    Route::get('/absensisaya', [LaporanAbsensiController::class, 'absensisaya'])->name('absensisaya');
-  });
+    Route::group(['middleware' => ['role:admin|guru']], function () {
+        Route::get('/laporanabsensi', [LaporanAbsensiController::class, 'index'])->name('laporanabsensi');
+    });
 
-  Route::group(['middleware' => ['role:wali']], function () {
-    Route::get('/absensianaksaya', [LaporanAbsensiController::class, 'absensianaksaya'])->name('absensianaksaya');
-  });
+    Route::group(['middleware' => ['role:guru']], function () {
+        Route::get('/jadwalsaya', [JadwalController::class, 'jadwalsaya'])->name('jadwalsaya');
+        Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi');
+    });
+
+    Route::group(['middleware' => ['role:siswa']], function () {
+        Route::get('/absensisaya', [LaporanAbsensiController::class, 'absensisaya'])->name('absensisaya');
+    });
+
+    Route::group(['middleware' => ['role:wali']], function () {
+        Route::get('/absensianaksaya', [LaporanAbsensiController::class, 'absensianaksaya'])->name('absensianaksaya');
+    });
 });
