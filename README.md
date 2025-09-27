@@ -40,3 +40,12 @@ Wali/Orang Tua Siswa
 email : wali1@gmail.com
 password : wali1
 ```
+
+### Simpan perubahan
+Jika pengerjaan satu fitur sudah selesai, jangan lupa push ke github
+```cmd
+1. git add .
+2. git commit -m "pesan commit" contoh git commit -m "update fitur jurusan"
+3. git push origin main
+4. selesai
+```
