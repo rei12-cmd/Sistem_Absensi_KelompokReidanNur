@@ -1,5 +1,4 @@
 @extends('layout')
-
 @section('title', 'Kelas')
 
 @section('breadcumb')
@@ -7,7 +6,7 @@
         <div class="col-sm-6"><h3 class="mb-0">Kelas</h3></div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-end">
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('kelas.index') }}">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Kelas</li>
             </ol>
         </div>
@@ -16,124 +15,80 @@
 
 @section('content')
     <div class="row">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h3 class="card-title">Data Kelas</h3>
-                {{-- TOMBOL TAMBAH DATA --}}
-                <a href="{{ route('kelas.create') }}" class="btn btn-success ms-auto">
-                    <i class="bi bi-plus-lg"></i> Tambah Kelas
-                </a>
-            </div>
-            <div class="card-body">
-                {{-- MENAMPILKAN PESAN SUKSES --}}
-                @if (session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="col-12">
+            <!-- Default box -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col-12 col-md-6 mb-3 mb-md-0">
+                            <h3 class="card-title">Data Kelas</h3>
+                        </div>
+                        <div class="col-12 col-md-6 text-md-end">
+                            <a href="{{ route('kelas.create') }}" class="btn btn-info btn-sm">
+                                <i class="bi bi-folder-plus"></i> Tambah
+                            </a>
+                        </div>
                     </div>
-                @endif
-
-                <div class="table-responsive">
-                    <table id="kelas-table" class="table table-bordered table-striped">
-                        <thead>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="kelas-table" class="table table-bordered table-striped">
+                            <thead>
                             <tr>
                                 <th>No</th>
                                 <th>Nama</th>
-                                <th width="150px">Tindakan</th>
+                                <th>Jurusan</th>
+                                <th>Tindakan</th>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {{-- gunakan $kelas sebagai data dari controller --}}
-                            @forelse($kelas as $item)
+                            </thead>
+                            <tbody>
+                            @foreach($kelas as $ac)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->nama }}</td>
+                                    <td>{{ $ac->nama }}</td>
+                                    <td>{{ $ac->jurusan->nama }}</td>
                                     <td>
-                                        <div class="d-flex">
-                                            {{-- TOMBOL SHOW --}}
-                                            <a href="{{ route('kelas.show', $item->id) }}" class="btn btn-info btn-sm btn-crud me-2" title="Lihat">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            {{-- TOMBOL EDIT --}}
-                                            <a href="{{ route('kelas.edit', $item->id) }}" class="btn btn-primary btn-sm btn-crud me-2" title="Edit">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </a>
+                                        <a href="{{ route('kelas.edit', $ac['id']) }}" class="btn text-bg-dark btn-sm">
+                                            <i class="bi bi-pencil-square"></i>
+                                            Edit
+                                        </a>
 
-                                            {{-- FORM UNTUK HAPUS DATA --}}
-                                            <form id="delete-form-{{ $item->id }}" action="{{ route('kelas.destroy', $item->id) }}" method="POST" style="display:inline-block;">
-                                                @csrf
-                                                @method('DELETE')
-
-                                                {{-- TOMBOL HAPUS DENGAN KONFIRMASI --}}
-                                                <button type="button" class="btn btn-danger btn-sm btn-crud" onclick="confirmDelete({{ $item->id }})" title="Hapus">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
+                                        <form id="delete-form-{{ $ac->id }}" action="{{ route('kelas.destroy', $ac->id) }}" method="POST" class="d-inline-block">
+                                            @csrf
+                                            @method('DELETE')
+                                            <a href="#" class="btn btn-rounded btn-danger btn-sm" onclick="confirmDelete({{ $ac->id }})">
+                                                <i class="bi bi-trash"></i>
+                                                Hapus
+                                            </a>
+                                        </form>
                                     </td>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="3" class="text-center">Data kelas belum tersedia.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
+            <!-- /.card -->
         </div>
     </div>
 @endsection
 
----
-
 @push('styles')
-    {{-- Tambahkan link CSS untuk Bootstrap Icons dan DataTables --}}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-
-    {{-- Custom kecil supaya tombol CRUD ukurannya sama dan icon ter-center --}}
-    <style>
-        /* Sesuaikan nilai width/height sesuai preferensi (ubah jika ingin lebih kecil/besar) */
-        .btn-crud {
-            width: 38px !important;
-            height: 34px !important;
-            padding: 0 !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            border-radius: 6px !important;
-            line-height: 1 !important;
-        }
-        /* Jika tema lain menimpa, pakai selector lebih spesifik untuk tabel kelas */
-        table#kelas-table .btn-crud {
-            width: 38px !important;
-            height: 34px !important;
-        }
-        /* Spasi antar tombol tetap rapi */
-        .btn-crud.me-2 { margin-right: .5rem !important; }
-    </style>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 @endpush
 
 @push('scripts')
-    {{-- jQuery dan DataTables --}}
-    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-
-    {{-- SweetAlert2 (Hanya jika belum di-load di layout) --}}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Inisialisasi DataTables untuk tabel kelas
-            $('#kelas-table').DataTable({
-                // Opsi DataTables tambahan jika diperlukan
-            });
+            $('#kelas-table').DataTable();
         });
+    </script>
 
-        // Fungsi konfirmasi hapus menggunakan SweetAlert2
-        function confirmDelete(id) {
+    <script>
+        function confirmDelete(jID) {
             Swal.fire({
                 title: "Apakah Anda yakin?",
                 text: "Data yang dihapus tidak bisa dikembalikan!",
@@ -145,8 +100,7 @@
                 cancelButtonText: "Batal"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Submit form penghapusan yang sesuai
-                    document.getElementById('delete-form-' + id).submit();
+                    document.getElementById('delete-form-' + jID).submit();
                 }
             });
         }

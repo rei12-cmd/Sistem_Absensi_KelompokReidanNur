@@ -1,15 +1,13 @@
 @extends('layout')
-
-@section('title', 'Tambah Jurusan')
+@section('title', 'Jurusan - Create')
 
 @section('breadcumb')
     <div class="row">
-        <div class="col-sm-6"><h3 class="mb-0">Tambah Jurusan</h3></div>
+        <div class="col-sm-6"><h3 class="mb-0">Jurusan</h3></div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-end">
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('jurusan.index') }}">Jurusan</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Tambah Data</li>
+                <li class="breadcrumb-item"><a href="{{ route('jurusan.index') }}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Create</li>
             </ol>
         </div>
     </div>
@@ -17,36 +15,47 @@
 
 @section('content')
     <div class="row">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Form Tambah Jurusan</h3>
-            </div>
-            <div class="card-body">
-                {{-- Menampilkan pesan error validasi --}}
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <strong>Whoops!</strong> Ada beberapa masalah dengan input Anda.<br><br>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+        <div class="col-md-6">
+            <!-- Default box -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Tambah Data Jurusan</h3>
+                </div>
+                <div class="card-body">
 
-                <form action="{{ route('jurusan.store') }}" method="POST">
-                    @csrf
-                    <div class="mb-3">
-                        <label for="nama" class="form-label">Nama Jurusan:</label>
-                        <input type="text" name="nama" class="form-control" placeholder="Contoh: Pengembangan Perangkat Lunak & Gim" value="{{ old('nama') }}">
-                    </div>
-                    <div class="d-flex justify-content-end">
-                         <a class="btn btn-secondary me-2" href="{{ route('jurusan.index') }}">Batal</a>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                    </div>
-                </form>
+                    <form method="POST" action="{{ route('jurusan.store') }}" onsubmit="disableSubmitButton()">
+                        @csrf
+                        @error('nama')
+                        <span class="badge bg-danger">{{ $message }}</span>
+                        @enderror
+                        <div class="mb-3">
+                            <label for="nama" class="form-label">Nama</label>
+                            <input type="text" class="form-control" id="nama" name="nama" value="{{ old('nama') }}">
+                        </div>
 
+                        <button type="submit" class="btn btn-primary" id="submit-btn">
+                            <i class="bi bi-floppy"></i>
+                            <span id="button-text">Simpan Jurusan</span>
+                            <span id="loading-spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                        </button>
+                    </form>
+                </div>
             </div>
+            <!-- /.card -->
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        function disableSubmitButton() {
+            const submitButton = document.getElementById('submit-btn');
+            const spinner = document.getElementById('loading-spinner');
+            const buttonText = document.getElementById('button-text');
+
+            submitButton.disabled = true;
+            spinner.style.display = 'inline-block';
+            buttonText.textContent = 'Menyimpan...';
+        }
+    </script>
+@endpush

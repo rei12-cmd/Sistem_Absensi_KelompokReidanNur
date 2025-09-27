@@ -14,8 +14,7 @@ class JurusanController extends Controller
      */
     public function index(): View
     {
-        // Variabel $jurusan sekarang tersedia di view 'jurusan.index'
-        $jurusan = Jurusan::all();
+        $jurusan = Jurusan::orderBy('updated_at', 'desc')->get();
 
         return view('jurusan.index', compact('jurusan'));
     }
@@ -45,15 +44,6 @@ class JurusanController extends Controller
 
         // Redirect kembali dengan pesan sukses
         return redirect()->route('jurusan.index')->with('success', 'Data Jurusan berhasil ditambahkan!');
-    }
-
-    /**
-     * Menampilkan detail satu jurusan berdasarkan ID.
-     */
-    public function show(Jurusan $jurusan): View
-    {
-        // Parameter di-resolve otomatis (Route Model Binding)
-        return view('jurusan.show', compact('jurusan'));
     }
 
     /**

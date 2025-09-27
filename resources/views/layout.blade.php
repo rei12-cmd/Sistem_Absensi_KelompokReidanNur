@@ -37,7 +37,7 @@
 </head>
 <!--end::Head-->
 <!--begin::Body-->
-<body class="layout-fixed sidebar-expand-lg sidebar-mini sidebar-collapse bg-body-tertiary">
+<body class="layout-fixed sidebar-expand-lg sidebar-mini bg-body-tertiary">
 <!--begin::App Wrapper-->
 <div class="app-wrapper">
     <!--begin::Header-->
@@ -109,8 +109,8 @@
                     </li>
 
                     @if (auth()->user()->hasRole('admin'))
-                    <li class="nav-item {{ setMenuOpen(['jurusan', 'kelas', 'guru', 'siswa', 'wali', 'mapel']) }}">
-                        <a href="#" class="nav-link {{ setActive(['jurusan', 'kelas', 'guru', 'siswa', 'wali', 'mapel']) }}">
+                    <li class="nav-item {{ setMenuOpen(['jurusan.index', 'jurusan.create', 'jurusan.edit', 'kelas.index', 'kelas.create', 'kelas.edit', 'guru', 'siswa', 'wali', 'mapel']) }}">
+                        <a href="#" class="nav-link {{ setActive(['jurusan', 'jurusan.create', 'jurusan.edit', 'kelas.index', 'kelas.create', 'kelas.edit', 'guru', 'siswa', 'wali', 'mapel']) }}">
                             <i class="nbi bi-clipboard-data"></i>
                             <p>
                                 Master Data
@@ -119,7 +119,7 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('jurusan.index') }}" class="nav-link {{ setActive(['jurusan']) }}">
+                                <a href="{{ route('jurusan.index', 'jurusan.create', 'jurusan.edit') }}" class="nav-link {{ setActive(['jurusan.index', 'jurusan.create', 'jurusan.edit']) }}">
                                     <i class="bi bi-heart-arrow"></i>
                                     <p>Jurusan</p>
                                 </a>
@@ -127,7 +127,7 @@
                         </ul>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('kelas') }}" class="nav-link {{ setActive(['kelas']) }}">
+                                <a href="{{ route('kelas.index', 'kelas.create', 'kelas.edit') }}" class="nav-link {{ setActive(['kelas.index', 'kelas.create', 'kelas.edit']) }}">
                                     <i class="bi bi-heart-arrow"></i>
                                     <p>Kelas</p>
                                 </a>

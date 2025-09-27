@@ -26,10 +26,7 @@ Route::middleware(['auth'])->group(function() {
         Route::resource('jurusan', JurusanController::class);
 
         // Route resource untuk kelas
-        Route::resource('kelas', KelasController::class);
-
-        // Alias lama biar tidak error di view lama
-        Route::get('/kelas', [KelasController::class, 'index'])->name('kelas');
+        Route::resource('kelas', KelasController::class)->parameters(['kelas' => 'kelas']);
 
         // Alias lama untuk controller lain
         Route::get('/guru', [GuruController::class, 'index'])->name('guru');

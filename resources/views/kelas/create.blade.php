@@ -1,59 +1,76 @@
 @extends('layout')
+@section('title', 'Kelas - Create')
 
-@section('title', 'Tambah Kelas')
+@section('breadcumb')
+    <div class="row">
+        <div class="col-sm-6"><h3 class="mb-0">Kelas</h3></div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-end">
+                <li class="breadcrumb-item"><a href="{{ route('kelas.index') }}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Create</li>
+            </ol>
+        </div>
+    </div>
+@endsection
 
 @section('content')
-<div class="card">
-    <div class="card-header"><h3 class="card-title">Tambah Kelas</h3></div>
-    <div class="card-body">
-        <form action="{{ route('kelas.store') }}" method="POST">
-            @csrf
+    <div class="row">
+        <div class="col-md-6">
+            <!-- Default box -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Buat Kelas Baru</h3>
+                </div>
+                <div class="card-body">
 
-            <div class="mb-3">
-                <label for="nama" class="form-label">Nama Kelas</label>
-                <input
-                    type="text"
-                    name="nama"
-                    id="nama"
-                    class="form-control @error('nama') is-invalid @enderror"
-                    value="{{ old('nama') }}"
-                >
-                @error('nama')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+                    <form method="POST" action="{{ route('kelas.store') }}" onsubmit="disableSubmitButton()">
+                        @csrf
+                        @error('nama')
+                        <span class="badge bg-danger">{{ $message }}</span>
+                        @enderror
+                        <div class="mb-3">
+                            <label for="nama" class="form-label">Nama Kelas</label>
+                            <input type="text" class="form-control" id="nama" name="nama">
+                        </div>
+
+                        @error('jurusan_id')
+                        <span class="badge bg-danger">{{ $message }}</span>
+                        @enderror
+                        <div class="mb-3">
+                            <label for="jurusan_id" class="form-label">Jurusan</label>
+                            <select class="form-control" id="jurusan_id" name="jurusan_id">
+                                <option value="">Pilih Jurusan</option>
+                                @foreach($jurusans as $jurusan)
+                                    <option value="{{ $jurusan->id }}">{{ $jurusan->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" id="submit-btn">
+                            <i class="bi bi-floppy"></i>
+                            <span id="button-text">Simpan Kelas</span>
+                            <span id="loading-spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                        </button>
+                    </form>
+
+
+                </div>
             </div>
-
-            <div class="mb-3">
-                <label for="jurusan_id" class="form-label">Jurusan</label>
-                <select
-                    name="jurusan_id"
-                    id="jurusan_id"
-                    class="form-select @error('jurusan_id') is-invalid @enderror"
-                >
-                    <option value="">-- Pilih Jurusan --</option>
-
-                    @if(isset($jurusans) && $jurusans->count())
-                        @foreach($jurusans as $j)
-                            {{-- pastikan atribut nama di tabel jurusan adalah "nama" --}}
-                            <option value="{{ $j->id }}" {{ old('jurusan_id') == $j->id ? 'selected' : '' }}>
-                                {{ $j->nama }}
-                            </option>
-                        @endforeach
-                    @else
-                        <option disabled>Belum ada data jurusan</option>
-                    @endif
-
-                </select>
-                @error('jurusan_id')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <button class="btn btn-success">Simpan</button>
-
-            {{-- Tombol Batal: pakai route('kelas.index') jika ada, kalau tidak fallback ke route('kelas') atau url('/kelas') --}}
-            <a href="{{ Route::has('kelas.index') ? route('kelas.index') : (Route::has('kelas') ? route('kelas') : url('/kelas')) }}" class="btn btn-secondary">Batal</a>
-        </form>
+            <!-- /.card -->
+        </div>
     </div>
-</div>
 @endsection
+
+@push('scripts')
+    <script>
+        function disableSubmitButton() {
+            const submitButton = document.getElementById('submit-btn');
+            const spinner = document.getElementById('loading-spinner');
+            const buttonText = document.getElementById('button-text');
+
+            submitButton.disabled = true;
+            spinner.style.display = 'inline-block';
+            buttonText.textContent = 'Menyimpan...';
+        }
+    </script>
+@endpush
