@@ -75,7 +75,7 @@
         <!--begin::Sidebar Brand-->
         <div class="sidebar-brand">
             <!--begin::Brand Link-->
-            <a href="{{ route('dashboard') }}" class="brand-link">
+            <a href="{{ Route::has('dashboard') ? route('dashboard') : '#' }}" class="brand-link">
                 <!--begin::Brand Image-->
                 <img
                         src="{{ asset('img/AdminLTELogo.png') }}"
@@ -102,64 +102,116 @@
                 >
 
                     <li class="nav-item">
-                        <a href="{{ route('dashboard') }}" class="nav-link {{ setActive(['dashboard']) }}">
+                        <a href="{{ Route::has('dashboard') ? route('dashboard') : '#' }}" class="nav-link {{ setActive(['dashboard']) }}">
                             <i class="bi bi-speedometer"></i>
                             <p>Dashboard</p>
                         </a>
                     </li>
 
                     @if (auth()->user()->hasRole('admin'))
-                    <li class="nav-item {{ setMenuOpen(['jurusan.index', 'jurusan.create', 'jurusan.edit', 'kelas.index', 'kelas.create', 'kelas.edit', 'guru', 'siswa', 'wali', 'mapel']) }}">
-                        <a href="#" class="nav-link {{ setActive(['jurusan', 'jurusan.create', 'jurusan.edit', 'kelas.index', 'kelas.create', 'kelas.edit', 'guru', 'siswa', 'wali', 'mapel']) }}">
+                    {{-- safety: prepare urls with Route::has to avoid "Route [...] not defined" errors --}}
+                    @php
+                        // jurusan
+                        if (\Illuminate\Support\Facades\Route::has('jurusan.index')) {
+                            $jurusanUrl = route('jurusan.index');
+                        } elseif (\Illuminate\Support\Facades\Route::has('jurusan')) {
+                            $jurusanUrl = route('jurusan');
+                        } else {
+                            $jurusanUrl = '#';
+                        }
+
+                        // kelas
+                        if (\Illuminate\Support\Facades\Route::has('kelas.index')) {
+                            $kelasUrl = route('kelas.index');
+                        } elseif (\Illuminate\Support\Facades\Route::has('kelas')) {
+                            $kelasUrl = route('kelas');
+                        } else {
+                            $kelasUrl = '#';
+                        }
+
+                        // guru: prefer resource name 'guru.index' but fall back to 'guru' if present
+                        if (\Illuminate\Support\Facades\Route::has('guru.index')) {
+                            $guruUrl = route('guru.index');
+                        } elseif (\Illuminate\Support\Facades\Route::has('guru')) {
+                            $guruUrl = route('guru');
+                        } else {
+                            $guruUrl = '#';
+                        }
+
+                        // siswa, wali, mapel
+                        $siswaUrl = \Illuminate\Support\Facades\Route::has('siswa') ? route('siswa') : ( \Illuminate\Support\Facades\Route::has('siswa.index') ? route('siswa.index') : '#' );
+                        $waliUrl = \Illuminate\Support\Facades\Route::has('wali') ? route('wali') : ( \Illuminate\Support\Facades\Route::has('wali.index') ? route('wali.index') : '#' );
+                        $mapelUrl = \Illuminate\Support\Facades\Route::has('mapel') ? route('mapel') : ( \Illuminate\Support\Facades\Route::has('mapel.index') ? route('mapel.index') : '#' );
+
+                        // jadwal (admin menu): coba 'jadwal.index' dulu, lalu 'jadwal'
+                        if (\Illuminate\Support\Facades\Route::has('jadwal.index')) {
+                            $jadwalUrl = route('jadwal.index');
+                        } elseif (\Illuminate\Support\Facades\Route::has('jadwal')) {
+                            $jadwalUrl = route('jadwal');
+                        } else {
+                            $jadwalUrl = '#';
+                        }
+                    @endphp
+
+                    <li class="nav-item {{ setMenuOpen(['jurusan.index', 'jurusan.create', 'jurusan.edit', 'kelas.index', 'kelas.create', 'kelas.edit', 'guru.index', 'guru', 'siswa', 'wali', 'mapel']) }}">
+                        <a href="#" class="nav-link {{ setActive(['jurusan.index','kelas.index','guru','guru.index','siswa','mapel']) }}">
                             <i class="nbi bi-clipboard-data"></i>
                             <p>
                                 Master Data
                                 <i class="nav-arrow bi bi-chevron-right"></i>
                             </p>
                         </a>
+
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('jurusan.index', 'jurusan.create', 'jurusan.edit') }}" class="nav-link {{ setActive(['jurusan.index', 'jurusan.create', 'jurusan.edit']) }}">
+                                {{-- gunakan url aman --}}
+                                <a href="{{ $jurusanUrl }}" class="nav-link {{ setActive(['jurusan.index', 'jurusan.create', 'jurusan.edit','jurusan']) }}">
                                     <i class="bi bi-heart-arrow"></i>
                                     <p>Jurusan</p>
                                 </a>
                             </li>
                         </ul>
+
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('kelas.index', 'kelas.create', 'kelas.edit') }}" class="nav-link {{ setActive(['kelas.index', 'kelas.create', 'kelas.edit']) }}">
+                                <a href="{{ $kelasUrl }}" class="nav-link {{ setActive(['kelas.index', 'kelas.create', 'kelas.edit','kelas']) }}">
                                     <i class="bi bi-heart-arrow"></i>
                                     <p>Kelas</p>
                                 </a>
                             </li>
                         </ul>
+
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('guru') }}" class="nav-link {{ setActive(['guru']) }}">
+                                {{-- guru link aman: akan memilih route('guru.index') atau route('guru') bila tersedia --}}
+                                <a href="{{ $guruUrl }}" class="nav-link {{ setActive(['guru','guru.index','guru.create','guru.edit']) }}">
                                     <i class="bi bi-heart-arrow"></i>
                                     <p>Guru</p>
                                 </a>
                             </li>
                         </ul>
+
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('siswa') }}" class="nav-link {{ setActive(['siswa']) }}">
+                                <a href="{{ $siswaUrl }}" class="nav-link {{ setActive(['siswa','siswa.index','siswa.create','siswa.edit']) }}">
                                     <i class="bi bi-heart-arrow"></i>
                                     <p>Siswa</p>
                                 </a>
                             </li>
                         </ul>
+
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('wali') }}" class="nav-link {{ setActive(['wali']) }}">
+                                <a href="{{ $waliUrl }}" class="nav-link {{ setActive(['wali','wali.index','wali.create','wali.edit']) }}">
                                     <i class="bi bi-heart-arrow"></i>
                                     <p>Wali</p>
                                 </a>
                             </li>
                         </ul>
+
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{{ route('mapel') }}" class="nav-link {{ setActive(['mapel']) }}">
+                                <a href="{{ $mapelUrl }}" class="nav-link {{ setActive(['mapel','mapel.index','mapel.create','mapel.edit']) }}">
                                     <i class="bi bi-heart-arrow"></i>
                                     <p>Mata Pelajaran</p>
                                 </a>
@@ -168,7 +220,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a href="{{ route('jadwal') }}" class="nav-link {{ setActive(['jadwal']) }}">
+                        <a href="{{ $jadwalUrl }}" class="nav-link {{ setActive(['jadwal','jadwal.index','jadwal.create','jadwal.edit']) }}">
                             <i class="bi bi-kanban"></i>
                             <p>Jadwal</p>
                         </a>
@@ -176,46 +228,61 @@
                     @endif
 
                     @if (auth()->user()->hasRole('guru'))
-                    <li class="nav-item">
-                        <a href="{{ route('jadwalsaya') }}" class="nav-link {{ setActive(['jadwalsaya']) }}">
-                            <i class="bi bi-kanban"></i>
-                            <p>Jadwal Saya</p>
-                        </a>
-                    </li>
+                        @php
+                            // guru-only routes: jadwalsaya & absensi (cek keberadaan nama rute sebelum menggunakan)
+                            $jadwalsayaUrl = \Illuminate\Support\Facades\Route::has('jadwalsaya') ? route('jadwalsaya') : '#';
+                            $absensiUrl = \Illuminate\Support\Facades\Route::has('absensi') ? route('absensi') : '#';
+                        @endphp
 
-                    <li class="nav-item">
-                        <a href="{{ route('absensi') }}" class="nav-link {{ setActive(['absensi']) }}">
-                            <i class="bi bi-journal-check"></i>
-                            <p>Absensi</p>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="{{ $jadwalsayaUrl }}" class="nav-link {{ setActive(['jadwalsaya']) }}">
+                                <i class="bi bi-kanban"></i>
+                                <p>Jadwal Saya</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ $absensiUrl }}" class="nav-link {{ setActive(['absensi']) }}">
+                                <i class="bi bi-journal-check"></i>
+                                <p>Absensi</p>
+                            </a>
+                        </li>
                     @endif
 
                     @hasanyrole('guru|admin')
-                    <li class="nav-item">
-                        <a href="{{ route('laporanabsensi') }}" class="nav-link {{ setActive(['laporanabsensi']) }}">
-                            <i class="bi bi-info-lg"></i>
-                            <p>Laporan Absensi</p>
-                        </a>
-                    </li>
+                        @php
+                            $laporanAbsensiUrl = \Illuminate\Support\Facades\Route::has('laporanabsensi') ? route('laporanabsensi') : ( \Illuminate\Support\Facades\Route::has('laporanabsensi.index') ? route('laporanabsensi.index') : '#' );
+                        @endphp
+                        <li class="nav-item">
+                            <a href="{{ $laporanAbsensiUrl }}" class="nav-link {{ setActive(['laporanabsensi']) }}">
+                                <i class="bi bi-info-lg"></i>
+                                <p>Laporan Absensi</p>
+                            </a>
+                        </li>
                     @endhasanyrole
 
                     @if (auth()->user()->hasRole('siswa'))
-                    <li class="nav-item">
-                        <a href="{{ route('absensisaya') }}" class="nav-link {{ setActive(['absensisaya']) }}">
-                            <i class="bi bi-info-lg"></i>
-                            <p>Absensi Saya</p>
-                        </a>
-                    </li>
+                        @php
+                            $absensisayaUrl = \Illuminate\Support\Facades\Route::has('absensisaya') ? route('absensisaya') : '#';
+                        @endphp
+                        <li class="nav-item">
+                            <a href="{{ $absensisayaUrl }}" class="nav-link {{ setActive(['absensisaya']) }}">
+                                <i class="bi bi-info-lg"></i>
+                                <p>Absensi Saya</p>
+                            </a>
+                        </li>
                     @endif
 
                     @if (auth()->user()->hasRole('wali'))
-                    <li class="nav-item">
-                        <a href="{{ route('absensianaksaya') }}" class="nav-link {{ setActive(['absensianaksaya']) }}">
-                            <i class="bi bi-info-lg"></i>
-                            <p>Absensi Anak Saya</p>
-                        </a>
-                    </li>
+                        @php
+                            $absensianaksayaUrl = \Illuminate\Support\Facades\Route::has('absensianaksaya') ? route('absensianaksaya') : '#';
+                        @endphp
+                        <li class="nav-item">
+                            <a href="{{ $absensianaksayaUrl }}" class="nav-link {{ setActive(['absensianaksaya']) }}">
+                                <i class="bi bi-info-lg"></i>
+                                <p>Absensi Anak Saya</p>
+                            </a>
+                        </li>
                     @endif
 
                     <li class="nav-item">
@@ -223,7 +290,7 @@
                             <i class="bi bi-box-arrow-right"></i>
                             <p>Logout</p>
                         </a>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        <form id="logout-form" action="{{ Route::has('logout') ? route('logout') : '#' }}" method="POST" style="display: none;">
                             @csrf
                         </form>
                     </li>
@@ -341,23 +408,33 @@
 </script>
 
 <script>
-    document.getElementById('logout-btn').addEventListener('click', function(event) {
-        event.preventDefault();
+    // cek dulu apakah elemen ada sebelum menambahkan event listener
+    const _logoutBtn = document.getElementById('logout-btn');
+    if (_logoutBtn) {
+        _logoutBtn.addEventListener('click', function(event) {
+            event.preventDefault();
 
-        Swal.fire({
-            title: 'Apakah kamu yakin?',
-            text: "Kamu akan keluar dari sesi ini.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, logout!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('logout-form').submit();
-            }
+            Swal.fire({
+                title: 'Apakah kamu yakin?',
+                text: "Kamu akan keluar dari sesi ini.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, logout!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const logoutForm = document.getElementById('logout-form');
+                    if (logoutForm && logoutForm.getAttribute('action') !== '#') {
+                        logoutForm.submit();
+                    } else {
+                        // fallback jika route logout tidak tersedia
+                        window.location.href = '/';
+                    }
+                }
+            });
         });
-    });
+    }
 </script>
 </body>
 </html>

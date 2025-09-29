@@ -12,43 +12,90 @@ use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\LaporanAbsensiController;
 use Illuminate\Support\Facades\Route;
 
+/*
+|--------------------------------------------------------------------------
+| Public / Auth routes
+|--------------------------------------------------------------------------
+*/
 Route::get('/login', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('loginStore');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+/*
+|--------------------------------------------------------------------------
+| Protected routes (auth)
+|--------------------------------------------------------------------------
+*/
 Route::middleware(['auth'])->group(function() {
+
     Route::get('/', function() {
         return view('dashboard');
     })->name('dashboard');
 
+    /*
+    |--------------------------------------------------------------------------
+    | Admin only routes
+    |--------------------------------------------------------------------------
+    | Letakkan resource routes yang hanya boleh diakses admin di sini.
+    */
     Route::group(['middleware' => ['role:admin']], function () {
-        // Route resource untuk jurusan
+
+        // Resource untuk jurusan
         Route::resource('jurusan', JurusanController::class);
 
-        // Route resource untuk kelas
+        // Resource untuk kelas
         Route::resource('kelas', KelasController::class)->parameters(['kelas' => 'kelas']);
 
-        // Alias lama untuk controller lain
-        Route::get('/guru', [GuruController::class, 'index'])->name('guru');
+        // Resource untuk guru (membuat route names: guru.index, guru.create, dsb.)
+        Route::resource('guru', GuruController::class);
+        Route::resource('jadwal', JadwalController::class);
+
+        // Resource untuk mapel (ini sudah membuat route 'mapel.index', 'mapel.create', dsb.)
+        Route::resource('mapel', MataPelajaranController::class);
+
+
+
+        // Simple GET routes untuk siswa/wali (jika memang hanya menampilkan index sederhana)
         Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa');
         Route::get('/wali', [WaliController::class, 'index'])->name('wali');
-        Route::get('/mapel', [MataPelajaranController::class, 'index'])->name('mapel');
-        Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal');
+       
+
+
     });
 
+    /*
+    |--------------------------------------------------------------------------
+    | Admin or Guru routes
+    |--------------------------------------------------------------------------
+    */
     Route::group(['middleware' => ['role:admin|guru']], function () {
         Route::get('/laporanabsensi', [LaporanAbsensiController::class, 'index'])->name('laporanabsensi');
     });
 
+    /*
+    |--------------------------------------------------------------------------
+    | Guru only routes
+    |--------------------------------------------------------------------------
+    */
     Route::group(['middleware' => ['role:guru']], function () {
         Route::get('/jadwalsaya', [JadwalController::class, 'jadwalsaya'])->name('jadwalsaya');
         Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi');
     });
 
+    /*
+    |--------------------------------------------------------------------------
+    | Siswa only routes
+    |--------------------------------------------------------------------------
+    */
     Route::group(['middleware' => ['role:siswa']], function () {
         Route::get('/absensisaya', [LaporanAbsensiController::class, 'absensisaya'])->name('absensisaya');
     });
 
+    /*
+    |--------------------------------------------------------------------------
+    | Wali only routes
+    |--------------------------------------------------------------------------
+    */
     Route::group(['middleware' => ['role:wali']], function () {
         Route::get('/absensianaksaya', [LaporanAbsensiController::class, 'absensianaksaya'])->name('absensianaksaya');
     });
