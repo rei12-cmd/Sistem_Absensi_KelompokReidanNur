@@ -7,8 +7,8 @@ KP_Sistem_Absensi
 3. Penerapan Konsep UI/UX - Selesai
 4. CRUD Jurusan - Selesai
 5. CRUD Kelas - Selesai
-6. CRUD Guru
-7. CRUD Mata Pelajaran 
+6. CRUD Guru - selesai 
+7. CRUD Mata Pelajaran - selesai 
 8. Relasi Guru–Mapel–Kelas (pivot)
 9. CRUD Jadwal 
 10. CRUD Siswa (terhubung ke kelas & jurusan)
