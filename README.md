@@ -15,12 +15,13 @@ KP_Sistem_Absensi
 11. CRUD Wali & Relasi Wali–Siswa - on progres pak irawan 
 12. Absensi (input guru berdasarkan jadwal)
 13. Laporan Absensi (akses sesuai role: admin, guru, siswa, wali)
-14. Checking All
-15. Revisi (Jika diperlukan)
+14. Dashboard
+15. Checking All
+16. Revisi (Jika diperlukan)
     - revisi fitur 1
     - revisi fitur 2
     - dan seterusnya
-16. Selesai
+17. Selesai
 
 ## Jalankan Program
 ### Clone
