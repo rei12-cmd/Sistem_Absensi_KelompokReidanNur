@@ -7,6 +7,7 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse; // Untuk store, update, destroy
 use App\Models\Kelas;
 use App\Models\Jurusan; // Tambahkan ini untuk relasi ke jurusan
+use App\Models\Jadwal;  // Tambahkan ini untuk ambil data jadwal
 
 class KelasController extends Controller
 {
@@ -16,7 +17,10 @@ class KelasController extends Controller
     public function index(): View
     {
         $kelas = Kelas::with('jurusan')->get(); // Ambil kelas beserta jurusan
-        return view('kelas.index', compact('kelas'));
+        $jadwals = Jadwal::with(['guruMapelKelas.guru', 'guruMapelKelas.mataPelajaran', 'guruMapelKelas.kelas'])
+                        ->get(); // Ambil jadwal beserta relasinya
+
+        return view('kelas.index', compact('kelas', 'jadwals'));
     }
 
     /**
@@ -34,9 +38,8 @@ class KelasController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'nama' => 'required|unique:kelas,nama|max:255', // pakai tabel kelas
-            // PERBAIKAN: Mengubah jurusans menjadi jurusan (sesuai nama tabel di migrasi)
-            'jurusan_id' => 'required|exists:jurusan,id', // pastikan jurusan valid
+            'nama' => 'required|unique:kelas,nama|max:255',
+            'jurusan_id' => 'required|exists:jurusan,id',
         ]);
 
         Kelas::create([
@@ -60,7 +63,7 @@ class KelasController extends Controller
      */
     public function edit(Kelas $kelas): View
     {
-        $jurusans = Jurusan::all(); // biar bisa ubah jurusan juga
+        $jurusans = Jurusan::all();
         return view('kelas.edit', compact('kelas', 'jurusans'));
     }
 
@@ -71,7 +74,6 @@ class KelasController extends Controller
     {
         $request->validate([
             'nama' => 'required|unique:kelas,nama,' . $kelas->id . '|max:255',
-            // PERBAIKAN: Mengubah jurusans menjadi jurusan (sesuai nama tabel di migrasi)
             'jurusan_id' => 'required|exists:jurusan,id',
         ]);
 

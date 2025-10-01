@@ -36,7 +36,6 @@ Route::middleware(['auth'])->group(function() {
     |--------------------------------------------------------------------------
     | Admin only routes
     |--------------------------------------------------------------------------
-    | Letakkan resource routes yang hanya boleh diakses admin di sini.
     */
     Route::group(['middleware' => ['role:admin']], function () {
 
@@ -44,23 +43,25 @@ Route::middleware(['auth'])->group(function() {
         Route::resource('jurusan', JurusanController::class);
 
         // Resource untuk kelas
-        Route::resource('kelas', KelasController::class)->parameters(['kelas' => 'kelas']);
+        Route::resource('kelas', KelasController::class);
 
-        // Resource untuk guru (membuat route names: guru.index, guru.create, dsb.)
+        // Resource untuk guru
         Route::resource('guru', GuruController::class);
+
+        // Resource untuk jadwal (pakai default names Laravel)
         Route::resource('jadwal', JadwalController::class);
 
-        // Resource untuk mapel (ini sudah membuat route 'mapel.index', 'mapel.create', dsb.)
+        // Redirect dari route lama (guru-mapel-kelas.index) ke jadwal.index
+        Route::get('/guru-mapel-kelas', function () {
+            return redirect()->route('jadwal.index');
+        })->name('guru-mapel-kelas.index');
+
+        // Resource untuk mapel
         Route::resource('mapel', MataPelajaranController::class);
 
-
-
-        // Simple GET routes untuk siswa/wali (jika memang hanya menampilkan index sederhana)
+        // Siswa & wali (index saja)
         Route::get('/siswa', [SiswaController::class, 'index'])->name('siswa');
         Route::get('/wali', [WaliController::class, 'index'])->name('wali');
-       
-
-
     });
 
     /*
