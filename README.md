@@ -9,10 +9,10 @@ KP_Sistem_Absensi
 5. CRUD Kelas - Selesai
 6. CRUD Guru - selesai 
 7. CRUD Mata Pelajaran - selesai 
-8. Relasi Guru–Mapel–Kelas (pivot)
-9. CRUD Jadwal 
-10. CRUD Siswa (terhubung ke kelas & jurusan)
-11. CRUD Wali & Relasi Wali–Siswa 
+8. Relasi Guru–Mapel–Kelas (pivot) - on progres reisya
+9. CRUD Jadwal - selesai 
+10. CRUD Siswa (terhubung ke kelas & jurusan) - on progres pak irawan 
+11. CRUD Wali & Relasi Wali–Siswa - on progres pak irawan 
 12. Absensi (input guru berdasarkan jadwal)
 13. Laporan Absensi (akses sesuai role: admin, guru, siswa, wali)
 14. Checking All
