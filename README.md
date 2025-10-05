@@ -7,20 +7,21 @@ KP_Sistem_Absensi
 3. Penerapan Konsep UI/UX - Selesai
 4. CRUD Jurusan - Selesai
 5. CRUD Kelas - Selesai
-6. CRUD Guru
-7. CRUD Mata Pelajaran 
-8. Relasi Guru–Mapel–Kelas (pivot)
-9. CRUD Jadwal 
-10. CRUD Siswa (terhubung ke kelas & jurusan)
-11. CRUD Wali & Relasi Wali–Siswa 
+6. CRUD Guru - selesai 
+7. CRUD Mata Pelajaran - selesai 
+8. Relasi Guru–Mapel–Kelas (pivot) - on progres reisya
+9. CRUD Jadwal - selesai 
+10. CRUD Siswa (terhubung ke kelas & jurusan) - on progres
+11. CRUD Wali & Relasi Wali–Siswa - on progres 
 12. Absensi (input guru berdasarkan jadwal)
 13. Laporan Absensi (akses sesuai role: admin, guru, siswa, wali)
-14. Checking All
-15. Revisi (Jika diperlukan)
+14. Dashboard
+15. Checking All
+16. Revisi (Jika diperlukan)
     - revisi fitur 1
     - revisi fitur 2
     - dan seterusnya
-16. Selesai
+17. Selesai
 
 ## Jalankan Program
 ### Clone
