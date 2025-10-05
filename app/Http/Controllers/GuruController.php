@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 
 class GuruController extends Controller
 {
@@ -17,15 +18,15 @@ class GuruController extends Controller
     }
 
     /**
-     * Method index yang kamu kirimkan sebelumnya — saya pertahankan signature-nya.
-     * Saya tambahkan pengambilan data supaya view dapat menampilkan daftar guru.
+     * Menampilkan daftar semua guru.
+     * Mengambil semua data (->get()) agar konsisten dengan permintaan.
      */
     public function index(): View
     {
-        // Ambil data guru beserta relasi user, paginasi agar tidak membebani view
-        $gurus = Guru::with('user')->latest()->paginate(10);
+        // Ambil semua guru beserta relasi user (tanpa paginate)
+        $gurus = Guru::with('user')->get();
 
-        // Kembalikan view 'guru.index' (sama seperti yang ada di kode aslinya)
+        // Jika view sebelumnya mengharapkan paginator (links), ganti view agar menggunakan collection ($loop->iteration)
         return view('guru.index', compact('gurus'));
     }
 
@@ -35,7 +36,7 @@ class GuruController extends Controller
     public function create(): View
     {
         // Ambil daftar user untuk dropdown (akun yang terkait dengan guru)
-        // Gunakan kolom 'username' karena tabel users tidak punya kolom 'name'
+        // Gunakan kolom 'username' karena tabel users tidak selalu punya kolom 'name'
         $users = User::orderBy('username', 'asc')->get();
         return view('guru.create', compact('users'));
     }
@@ -52,9 +53,13 @@ class GuruController extends Controller
             'telepon' => 'nullable|string|max:20',
         ]);
 
-        Guru::create($validated);
-
-        return redirect()->route('guru.index')->with('success', 'Data guru berhasil ditambahkan.');
+        try {
+            Guru::create($validated);
+            return redirect()->route('guru.index')->with('success', 'Data guru berhasil ditambahkan.');
+        } catch (\Throwable $e) {
+            Log::error('Gagal menyimpan guru: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data guru.');
+        }
     }
 
     /**
@@ -62,7 +67,7 @@ class GuruController extends Controller
      */
     public function edit(Guru $guru): View
     {
-        // Sama, gunakan 'username' supaya tidak error
+        // Ambil daftar user juga dengan get()
         $users = User::orderBy('username', 'asc')->get();
         return view('guru.edit', compact('guru', 'users'));
     }
@@ -79,9 +84,13 @@ class GuruController extends Controller
             'telepon' => 'nullable|string|max:20',
         ]);
 
-        $guru->update($validated);
-
-        return redirect()->route('guru.index')->with('success', 'Data guru berhasil diupdate.');
+        try {
+            $guru->update($validated);
+            return redirect()->route('guru.index')->with('success', 'Data guru berhasil diupdate.');
+        } catch (\Throwable $e) {
+            Log::error('Gagal memperbarui guru (id='.$guru->id.'): ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat memperbarui data guru.');
+        }
     }
 
     /**
@@ -89,7 +98,12 @@ class GuruController extends Controller
      */
     public function destroy(Guru $guru): RedirectResponse
     {
-        $guru->delete();
-        return redirect()->route('guru.index')->with('success', 'Data guru berhasil dihapus.');
+        try {
+            $guru->delete();
+            return redirect()->route('guru.index')->with('success', 'Data guru berhasil dihapus.');
+        } catch (\Throwable $e) {
+            Log::error('Gagal menghapus guru (id='.$guru->id.'): ' . $e->getMessage());
+            return redirect()->route('guru.index')->with('error', 'Terjadi kesalahan saat menghapus data guru.');
+        }
     }
 }

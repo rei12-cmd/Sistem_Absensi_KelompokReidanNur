@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Jadwal;
 use App\Models\Guru;
 use App\Models\GuruMapelKelas;
+use App\Models\Kelas;
+use App\Models\MataPelajaran;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class JadwalController extends Controller
 {
@@ -23,10 +26,7 @@ class JadwalController extends Controller
             'guruMapelKelas.guru',
             'guruMapelKelas.mataPelajaran',
             'guruMapelKelas.kelas',
-        ])
-        ->orderBy('hari')
-        ->orderBy('jam_mulai')
-        ->paginate(15);
+        ])->get();
 
         return view('jadwal.index', compact('jadwals'));
     }
@@ -64,12 +64,12 @@ class JadwalController extends Controller
      */
     public function create(): View
     {
-        // Ambil relasi dengan Eloquent
-        $relations = GuruMapelKelas::with(['guru', 'mataPelajaran', 'kelas'])->get();
+        // Ambil relasi dengan Eloquent (pakai get)
+        $relations = GuruMapelKelas::with(['guru', 'mataPelajaran', 'kelas'])
+            ->orderBy('id', 'asc')
+            ->get();
 
-        // Log ke file laravel.log
         Log::info('RELATIONS COUNT: ' . $relations->count());
-        Log::info('RELATIONS DUMP: ' . json_encode($relations->toArray()));
 
         // Jika kosong, fallback join manual
         if ($relations->isEmpty()) {
@@ -81,7 +81,7 @@ class JadwalController extends Controller
                     'gmk.id as id',
                     'g.nama as guru_nama',
                     'mp.nama as mapel_nama',
-                    'k.nama_kelas as kelas_nama'
+                    'k.nama as kelas_nama'
                 )
                 ->get();
 
@@ -95,7 +95,6 @@ class JadwalController extends Controller
             });
 
             Log::info('FALLBACK RELATIONS COUNT: ' . $relations->count());
-            Log::info('FALLBACK RELATIONS DUMP: ' . json_encode($relations->toArray()));
         }
 
         return view('jadwal.create', compact('relations'));
@@ -153,5 +152,115 @@ class JadwalController extends Controller
     {
         $jadwal->delete();
         return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil dihapus.');
+    }
+
+    /**
+     * Menampilkan halaman daftar relasi Guru-Mapel-Kelas (Atur Mengajar)
+     * Semua memakai get() dan ordering aman (cek kolom tersedia)
+     */
+    public function aturIndex(): View
+    {
+        // Ambil relasi (urutkan berdasarkan id agar stabil)
+        $relations = GuruMapelKelas::with(['guru', 'mataPelajaran', 'kelas'])
+            ->orderBy('id', 'asc')
+            ->get();
+
+        // ===== Guru: tentukan kolom untuk ordering secara aman =====
+        if (Schema::hasTable('guru')) {
+            if (Schema::hasColumn('guru', 'nama')) {
+                $guruOrder = 'nama';
+            } elseif (Schema::hasColumn('guru', 'nama_guru')) {
+                $guruOrder = 'nama_guru';
+            } else {
+                $guruOrder = 'id';
+            }
+        } else {
+            $guruOrder = 'id';
+        }
+        $gurus = Guru::orderBy($guruOrder)->get();
+
+        // ===== Kelas: tentukan kolom untuk ordering secara aman =====
+        if (Schema::hasTable('kelas')) {
+            if (Schema::hasColumn('kelas', 'nama')) {
+                $kelasOrder = 'nama';
+            } elseif (Schema::hasColumn('kelas', 'nama_kelas')) {
+                $kelasOrder = 'nama_kelas';
+            } elseif (Schema::hasColumn('kelas', 'kode')) {
+                $kelasOrder = 'kode';
+            } else {
+                $kelasOrder = 'id';
+            }
+        } else {
+            $kelasOrder = 'id';
+        }
+        $kelas = Kelas::orderBy($kelasOrder)->get();
+
+        // ===== MataPelajaran: tentukan kolom untuk ordering secara aman =====
+        if (Schema::hasTable('mata_pelajaran')) {
+            if (Schema::hasColumn('mata_pelajaran', 'nama')) {
+                $mapelOrder = 'nama';
+            } elseif (Schema::hasColumn('mata_pelajaran', 'nama_mapel')) {
+                $mapelOrder = 'nama_mapel';
+            } else {
+                $mapelOrder = 'id';
+            }
+        } else {
+            $mapelOrder = 'id';
+        }
+        $mapels = MataPelajaran::orderBy($mapelOrder)->get();
+
+        return view('jadwal.atur_mengajar', compact('relations', 'gurus', 'kelas', 'mapels'));
+    }
+
+    /**
+     * Simpan relasi baru (Atur Mengajar)
+     */
+    public function aturStore(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'guru_id' => 'required|exists:guru,id',
+            'mata_pelajaran_id' => 'required|exists:mata_pelajaran,id',
+            'kelas_id' => 'required|exists:kelas,id',
+        ]);
+
+        try {
+            $exists = GuruMapelKelas::where('guru_id', $validated['guru_id'])
+                ->where('mata_pelajaran_id', $validated['mata_pelajaran_id'])
+                ->where('kelas_id', $validated['kelas_id'])
+                ->exists();
+
+            if ($exists) {
+                return redirect()->route('atur-mengajar.index')->with('error', 'Relasi sudah ada.');
+            }
+
+            GuruMapelKelas::create([
+                'guru_id' => $validated['guru_id'],
+                'mata_pelajaran_id' => $validated['mata_pelajaran_id'],
+                'kelas_id' => $validated['kelas_id'],
+            ]);
+
+            return redirect()->route('atur-mengajar.index')->with('success', 'Relasi berhasil ditambahkan.');
+        } catch (\Throwable $e) {
+            Log::error('Error saat menyimpan relasi: ' . $e->getMessage());
+            return redirect()->route('atur-mengajar.index')->with('error', 'Terjadi kesalahan saat menyimpan relasi.');
+        }
+    }
+
+    /**
+     * Hapus relasi Guru-Mapel-Kelas (Atur Mengajar)
+     */
+    public function aturDestroy($id): RedirectResponse
+    {
+        try {
+            $rel = GuruMapelKelas::find($id);
+            if ($rel) {
+                $rel->delete();
+                return redirect()->route('atur-mengajar.index')->with('success', 'Relasi berhasil dihapus.');
+            }
+            return redirect()->route('atur-mengajar.index')->with('error', 'Relasi tidak ditemukan.');
+        } catch (\Throwable $e) {
+            Log::error('Error saat menghapus relasi: ' . $e->getMessage());
+            return redirect()->route('atur-mengajar.index')->with('error', 'Terjadi kesalahan saat menghapus relasi.');
+        }
     }
 }

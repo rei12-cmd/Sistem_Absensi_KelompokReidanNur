@@ -11,12 +11,13 @@ class MataPelajaranController extends Controller
 {
     /**
      * Tampilkan daftar mata pelajaran.
-     * (Preserved: method index tetap ada, sekarang mengirim data ke view)
+     * Menggunakan pola seperti $jadwals = Jadwal::with([...])->get();
      */
     public function index(): View
     {
-        // Ambil semua mapel, urut berdasarkan nama agar tampil lebih rapi
-        $mapels = MataPelajaran::orderBy('nama')->get();
+        // Jika model MataPelajaran memiliki relasi (misalnya ke GuruMapel atau Kelas), tambahkan di sini.
+        // Misal: 'guruMapelKelas.guru', 'guruMapelKelas.kelas'
+        $mapels = MataPelajaran::with([])->get(); // pakai get() seperti permintaanmu
 
         return view('mapel.index', compact('mapels'));
     }
@@ -38,10 +39,10 @@ class MataPelajaranController extends Controller
             'nama' => 'required|string|max:255|unique:mata_pelajaran,nama',
         ]);
 
-        // Pastikan model MataPelajaran memiliki properti $fillable = ['nama']
         MataPelajaran::create($validated);
 
-        return redirect()->route('mapel.index')->with('success', 'Mata pelajaran berhasil ditambahkan.');
+        return redirect()->route('mapel.index')
+            ->with('success', 'Mata pelajaran berhasil ditambahkan.');
     }
 
     /**
@@ -58,13 +59,13 @@ class MataPelajaranController extends Controller
     public function update(Request $request, MataPelajaran $mapel): RedirectResponse
     {
         $validated = $request->validate([
-            // unique: abaikan record saat ini dengan id
             'nama' => "required|string|max:255|unique:mata_pelajaran,nama,{$mapel->id}",
         ]);
 
         $mapel->update($validated);
 
-        return redirect()->route('mapel.index')->with('success', 'Mata pelajaran berhasil diupdate.');
+        return redirect()->route('mapel.index')
+            ->with('success', 'Mata pelajaran berhasil diupdate.');
     }
 
     /**
@@ -74,6 +75,7 @@ class MataPelajaranController extends Controller
     {
         $mapel->delete();
 
-        return redirect()->route('mapel.index')->with('success', 'Mata pelajaran berhasil dihapus.');
+        return redirect()->route('mapel.index')
+            ->with('success', 'Mata pelajaran berhasil dihapus.');
     }
 }

@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse; // Tambahkan ini untuk method store, update, destroy
+use Illuminate\Http\RedirectResponse;
 use App\Models\Jurusan;
+use Illuminate\Support\Facades\Log;
 
 class JurusanController extends Controller
 {
@@ -14,7 +15,8 @@ class JurusanController extends Controller
      */
     public function index(): View
     {
-        $jurusan = Jurusan::orderBy('updated_at', 'desc')->get();
+        // Ambil semua data jurusan (tanpa orderBy)
+        $jurusan = Jurusan::get();
 
         return view('jurusan.index', compact('jurusan'));
     }
@@ -32,18 +34,25 @@ class JurusanController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        // Validasi data
         $request->validate([
-            'nama' => 'required|unique:jurusan,nama|max:255', // Pastikan 'jurusan' sesuai nama tabel
+            'nama' => 'required|unique:jurusan,nama|max:255',
         ]);
 
-        // Simpan data ke database
-        Jurusan::create([
-            'nama' => $request->nama,
-        ]);
+        try {
+            Jurusan::create([
+                'nama' => $request->nama,
+            ]);
 
-        // Redirect kembali dengan pesan sukses
-        return redirect()->route('jurusan.index')->with('success', 'Data Jurusan berhasil ditambahkan!');
+            return redirect()
+                ->route('jurusan.index')
+                ->with('success', 'Data Jurusan berhasil ditambahkan!');
+        } catch (\Throwable $e) {
+            Log::error('Gagal menyimpan jurusan: ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan saat menyimpan data jurusan.');
+        }
     }
 
     /**
@@ -51,7 +60,6 @@ class JurusanController extends Controller
      */
     public function edit(Jurusan $jurusan): View
     {
-        // Parameter di-resolve otomatis (Route Model Binding)
         return view('jurusan.edit', compact('jurusan'));
     }
 
@@ -60,19 +68,25 @@ class JurusanController extends Controller
      */
     public function update(Request $request, Jurusan $jurusan): RedirectResponse
     {
-        // Validasi data
         $request->validate([
-            // 'unique' diabaikan untuk nama yang sedang diedit
             'nama' => 'required|unique:jurusan,nama,' . $jurusan->id . '|max:255',
         ]);
 
-        // Perbarui data
-        $jurusan->update([
-            'nama' => $request->nama,
-        ]);
+        try {
+            $jurusan->update([
+                'nama' => $request->nama,
+            ]);
 
-        // Redirect kembali dengan pesan sukses
-        return redirect()->route('jurusan.index')->with('success', 'Data Jurusan berhasil diperbarui!');
+            return redirect()
+                ->route('jurusan.index')
+                ->with('success', 'Data Jurusan berhasil diperbarui!');
+        } catch (\Throwable $e) {
+            Log::error('Gagal memperbarui jurusan (id=' . $jurusan->id . '): ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan saat memperbarui data jurusan.');
+        }
     }
 
     /**
@@ -80,8 +94,16 @@ class JurusanController extends Controller
      */
     public function destroy(Jurusan $jurusan): RedirectResponse
     {
-        $jurusan->delete();
-
-        return redirect()->route('jurusan.index')->with('success', 'Data Jurusan berhasil dihapus!');
+        try {
+            $jurusan->delete();
+            return redirect()
+                ->route('jurusan.index')
+                ->with('success', 'Data Jurusan berhasil dihapus!');
+        } catch (\Throwable $e) {
+            Log::error('Gagal menghapus jurusan (id=' . $jurusan->id . '): ' . $e->getMessage());
+            return redirect()
+                ->route('jurusan.index')
+                ->with('error', 'Terjadi kesalahan saat menghapus data jurusan.');
+        }
     }
 }

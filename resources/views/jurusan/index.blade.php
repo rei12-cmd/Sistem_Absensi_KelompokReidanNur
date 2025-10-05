@@ -35,18 +35,23 @@
             <table id="jurusan-table" class="table table-bordered table-striped">
               <thead>
               <tr>
-                <th>No</th>
+                <th style="width:70px">No</th>
                 <th>Nama</th>
-                <th>Tindakan</th>
+                <th style="width:200px">Tindakan</th>
               </tr>
               </thead>
               <tbody>
               @foreach($jurusan as $ac)
                 <tr>
+                  {{-- Nomor awal dari server (DOM order) —
+                      DataTables akan menggantikannya saat draw agar tetap konsisten --}}
                   <td>{{ $loop->iteration }}</td>
-                  <td>{{ $ac['nama'] }}</td>
+
+                  {{-- Gunakan akses property object --}}
+                  <td>{{ $ac->nama }}</td>
+
                   <td>
-                    <a href="{{ route('jurusan.edit', $ac['id']) }}" class="btn text-bg-dark btn-sm">
+                    <a href="{{ route('jurusan.edit', $ac->id) }}" class="btn text-bg-dark btn-sm">
                       <i class="bi bi-pencil-square"></i>
                       Edit
                     </a>
@@ -77,11 +82,40 @@
 @endpush
 
 @push('scripts')
+  <!-- jQuery & DataTables -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+  <!-- SweetAlert2 (dipakai oleh confirmDelete) -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <script>
     $(document).ready(function() {
-      $('#jurusan-table').DataTable();
+      // Inisialisasi DataTable
+      var table = $('#jurusan-table').DataTable({
+        // Biarkan DOM order (order: []) - agar urutan dari server (controller) tetap dipakai
+        order: [],
+        paging: true,
+        info: true,
+        searching: true,
+        lengthChange: true,
+        // Matikan ordering pada kolom No dan Tindakan
+        columnDefs: [
+          { orderable: false, targets: [0, 2] }
+        ],
+        // Jangan tambahkan ordering default agar DOM order tetap
+      });
+
+      // Re-number kolom No setiap kali draw (paging/search/order)
+      table.on('draw.dt', function () {
+        var pageInfo = table.page.info();
+        table.column(0, { page: 'current' }).nodes().each(function(cell, i) {
+          // index global: page start + row index + 1
+          cell.innerHTML = pageInfo.start + i + 1;
+        });
+      });
+
+      // Trigger draw agar nomor ter-update di inisialisasi pertama
+      table.draw();
     });
   </script>
 
