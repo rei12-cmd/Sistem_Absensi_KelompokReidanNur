@@ -45,80 +45,68 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // --------------------------------------------------------------------------
 // Atur Mengajar (manajemen relasi guru-mapel-kelas)
-// (Tetap didefinisikan publik; jika butuh proteksi pindahkan ke group auth)
 // --------------------------------------------------------------------------
 Route::get('/atur-mengajar', [JadwalController::class, 'aturIndex'])->name('atur-mengajar.index');
 Route::post('/atur-mengajar/store', [JadwalController::class, 'aturStore'])->name('atur-mengajar.store');
 Route::delete('/atur-mengajar/{id}', [JadwalController::class, 'aturDestroy'])->name('atur-mengajar.destroy');
-
 
 // --------------------------------------------------------------------------
 // Protected routes (auth)
 // --------------------------------------------------------------------------
 Route::middleware(['auth'])->group(function () {
 
-    // Dashboard hanya untuk user yang sudah login
+    // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // ----------------------------------------------------------------------
-    // Admin only routes
+    // ADMIN ONLY
     // ----------------------------------------------------------------------
     Route::group(['middleware' => ['role:admin']], function () {
 
-        // Resource untuk jurusan
         Route::resource('jurusan', JurusanController::class);
-
-        // Resource untuk kelas
         Route::resource('kelas', KelasController::class)->parameters(['kelas' => 'kelas']);
-
-        // Resource untuk guru
         Route::resource('guru', GuruController::class);
-
-        // Resource untuk mata pelajaran
         Route::resource('mapel', MataPelajaranController::class);
 
-        /**
-         * EXPLICIT Siswa routes (added to ensure siswa.create / siswa.store etc exist)
-         * kept here BEFORE the Route::resource below — safe to keep both.
-         */
+        // Siswa explicit route + resource
         Route::get('siswa', [SiswaController::class, 'index'])->name('siswa.index');
         Route::get('siswa/create', [SiswaController::class, 'create'])->name('siswa.create');
         Route::post('siswa', [SiswaController::class, 'store'])->name('siswa.store');
         Route::get('siswa/{siswa}/edit', [SiswaController::class, 'edit'])->name('siswa.edit');
         Route::put('siswa/{siswa}', [SiswaController::class, 'update'])->name('siswa.update');
         Route::delete('siswa/{siswa}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
-
-        // Resource untuk siswa (CRUD lengkap) - tetap dipertahankan
         Route::resource('siswa', SiswaController::class);
 
-        // ------------------------------------------------------------------
-        // Wali routes
-        // ------------------------------------------------------------------
+        // Wali + Jadwal
         Route::resource('wali', WaliController::class);
-
-        // ------------------------------------------------------------------
-        // Resource untuk jadwal
-        // ------------------------------------------------------------------
         Route::resource('jadwal', JadwalController::class);
 
-        // Redirect dari route lama (guru-mapel-kelas.index) ke jadwal.index
         Route::get('/guru-mapel-kelas', function () {
             return redirect()->route('jadwal.index');
         })->name('guru-mapel-kelas.index');
     });
 
     // ----------------------------------------------------------------------
-    // Admin or Guru routes
+    // ADMIN & GURU
     // ----------------------------------------------------------------------
     Route::group(['middleware' => ['role:admin|guru']], function () {
-        // Laporan absensi untuk admin & guru
+        // Lama
         Route::get('/laporanabsensi', [LaporanAbsensiController::class, 'index'])->name('laporanabsensi');
-        // Optional: export (CSV) untuk admin/guru
-        Route::get('/laporanabsensi/export', [LaporanAbsensiController::class, 'export'])->name('laporanabsensi.export');
+
+        // 🔰 Laporan Absensi Baru (Lengkap)
+        Route::get('/laporan', [LaporanAbsensiController::class, 'index'])->name('laporan.index');
+        Route::get('/laporan/kelas/{kelas}/mapel/{mapel}', [LaporanAbsensiController::class, 'kelasDetail'])
+            ->name('laporan.kelas.detail');
+        Route::get('/laporan/siswa/{siswa}/mapel/{mapel}', [LaporanAbsensiController::class, 'siswaRekap'])
+            ->name('laporan.siswa.rekap');
+
+        // Export data laporan
+        Route::get('/laporanabsensi/export', [LaporanAbsensiController::class, 'export'])
+            ->name('laporanabsensi.export');
     });
 
     // ----------------------------------------------------------------------
-    // Guru only routes
+    // GURU ONLY
     // ----------------------------------------------------------------------
     Route::group(['middleware' => ['role:guru']], function () {
         Route::get('/jadwalsaya', [JadwalController::class, 'jadwalsaya'])->name('jadwalsaya');
@@ -126,29 +114,27 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // ----------------------------------------------------------------------
-    // Siswa only routes
+    // SISWA ONLY
     // ----------------------------------------------------------------------
     Route::group(['middleware' => ['role:siswa']], function () {
-        // Absensi siswa (halaman khusus siswa)
         Route::get('/absensisaya', [LaporanAbsensiController::class, 'absensisaya'])->name('absensisaya');
-
-        // Memberikan akses export bagi siswa (jika dibutuhkan)
-        Route::get('/laporanabsensi/export', [LaporanAbsensiController::class, 'export'])
-            ->middleware('role:siswa')
+        Route::get('/laporanabsensi/export/siswa', [LaporanAbsensiController::class, 'export'])
             ->name('laporanabsensi.export.siswa');
     });
 
     // ----------------------------------------------------------------------
-    // Wali only routes
+    // WALI ONLY
     // ----------------------------------------------------------------------
     Route::group(['middleware' => ['role:wali']], function () {
-        // Halaman absensi anak oleh wali
         Route::get('/absensianaksaya', [LaporanAbsensiController::class, 'absensianaksaya'])->name('absensianaksaya');
-
-        // Jika ingin ijinkan export bagi wali
-        Route::get('/laporanabsensi/export', [LaporanAbsensiController::class, 'export'])
-            ->middleware('role:wali')
+        Route::get('/laporanabsensi/export/wali', [LaporanAbsensiController::class, 'export'])
             ->name('laporanabsensi.export.wali');
     });
+});
 
+// ==========================================================================
+// Tambahan Route fallback & testing (opsional untuk memastikan route hidup)
+// ==========================================================================
+Route::get('/cek-laporan', function () {
+    return redirect()->route('laporan.index');
 });

@@ -1,7 +1,6 @@
 @extends('layout')
 @section('title', 'Laporan Absensi')
 
-{{-- ===================== BREADCRUMB ===================== --}}
 @section('breadcumb')
 <div class="content-header">
   <div class="container-fluid">
@@ -20,40 +19,42 @@
 </div>
 @endsection
 
-{{-- ===================== ISI KONTEN ===================== --}}
 @section('content')
-<div class="content">
-  <div class="container-fluid">
-    <div class="card shadow-sm">
-      <div class="card-header bg-primary text-white">
-        <h3 class="card-title mb-0">Daftar Laporan Absensi</h3>
-      </div>
-      <div class="card-body">
-        <p>Menampilkan seluruh laporan absensi siswa (khusus Admin & Guru).</p>
-        <div class="table-responsive">
-          <table class="table table-bordered table-striped">
-            <thead class="table-light">
-              <tr>
-                <th>No</th>
-                <th>Nama Siswa</th>
-                <th>Kelas</th>
-                <th>Tanggal</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {{-- Contoh data sementara --}}
-              <tr>
-                <td>1</td>
-                <td>Rina Puspita</td>
-                <td>XI RPL 1</td>
-                <td>2025-10-05</td>
-                <td><span class="badge bg-success">Hadir</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <h5 class="card-title mb-0">Daftar Kelas & Mata Pelajaran yang Anda Ajar</h5>
+    </div>
+    <div class="card-body p-0">
+      <table class="table table-bordered table-striped mb-0">
+        <thead>
+          <tr>
+            <th style="width:50px">No</th>
+            <th>Kelas</th>
+            <th>Mata Pelajaran</th>
+            <th style="width:120px">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          @forelse($list as $i => $row)
+            <tr>
+              <td>{{ $i + 1 }}</td>
+              <td>{{ $row->kelas->nama ?? '-' }}</td>
+              <td>{{ $row->mapel->nama ?? '-' }}</td>
+              <td>
+                <a href="{{ route('laporan.kelas.detail', ['kelas' => $row->kelas->id, 'mapel' => $row->mapel->id]) }}"
+                   class="btn btn-sm btn-primary">
+                  Detail
+                </a>
+              </td>
+            </tr>
+          @empty
+            <tr>
+              <td colspan="4" class="text-center">Belum ada data kelas / mata pelajaran.</td>
+            </tr>
+          @endforelse
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
