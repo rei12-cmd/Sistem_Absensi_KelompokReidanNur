@@ -231,7 +231,7 @@
                         @php
                             // guru-only routes: jadwalsaya & absensi (cek keberadaan nama rute sebelum menggunakan)
                             $jadwalsayaUrl = \Illuminate\Support\Facades\Route::has('jadwalsaya') ? route('jadwalsaya') : '#';
-                            $absensiUrl = \Illuminate\Support\Facades\Route::has('absensi') ? route('absensi') : '#';
+                            $absensiUrl = \Illuminate\Support\Facades\Route::has('absensi') ? route('absensi.index') : '#';
                         @endphp
 
                         <li class="nav-item">
@@ -242,7 +242,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="{{ $absensiUrl }}" class="nav-link {{ setActive(['absensi']) }}">
+                            <a href="{{ route('absensi.index') }}" class="nav-link {{ setActive(['absensi.index']) }}">
                                 <i class="bi bi-journal-check"></i>
                                 <p>Absensi</p>
                             </a>

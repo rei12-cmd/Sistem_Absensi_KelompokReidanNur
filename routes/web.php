@@ -122,7 +122,9 @@ Route::middleware(['auth'])->group(function () {
     // ----------------------------------------------------------------------
     Route::group(['middleware' => ['role:guru']], function () {
         Route::get('/jadwalsaya', [JadwalController::class, 'jadwalsaya'])->name('jadwalsaya');
-        Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi');
+        Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
+        Route::get('/absensi/{id}', [AbsensiController::class, 'show'])->name('absensi.show');
+        Route::post('/absensi/store', [AbsensiController::class, 'store'])->name('absensi.store');
     });
 
     // ----------------------------------------------------------------------
