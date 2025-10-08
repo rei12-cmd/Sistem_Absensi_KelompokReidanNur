@@ -111,6 +111,8 @@ class DatabaseSeeder extends Seeder
         DB::table('absensi')->insert([
             'jadwal_id' => $jadwal->id,
             'siswa_id'  => $siswa->id,
+            'kelas_id'  => $kelas->id,
+            'mata_pelajaran_id'  => $mapel->id,
             'tanggal'   => now()->toDateString(),
             'status'    => 'H',
             'keterangan'=> null,
