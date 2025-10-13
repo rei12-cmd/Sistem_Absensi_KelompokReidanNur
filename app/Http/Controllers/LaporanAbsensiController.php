@@ -54,6 +54,8 @@ class LaporanAbsensiController extends Controller
             ];
         });
 
+        dd($list);
+
         return view('laporan.index', compact('list'));
     }
 
