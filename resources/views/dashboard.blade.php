@@ -69,8 +69,6 @@
           @empty
             <p class="text-muted">Belum ada pengumuman.</p>
           @endforelse
-
-
         </div>
       </div>
     </div>
@@ -107,3 +105,37 @@
   });
 </script>
 @endsection
+
+{{-- Tambahan agar bisa juga di-stack ke layout --}}
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const labels = {!! json_encode($chartLabels ?? []) !!};
+  const values = {!! json_encode($chartValues ?? []) !!};
+
+  const ctx = document.getElementById('jurusanChart');
+  if (!ctx) return;
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Jumlah Siswa',
+        data: values,
+        backgroundColor: labels.map((l, i) => {
+          const palette = ['#ff52e5','#0b5cff','#00f0e0','#ffb86b','#9f7aea'];
+          return palette[i % palette.length];
+        }),
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+    }
+  });
+});
+</script>
+@endpush

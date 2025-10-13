@@ -234,12 +234,7 @@
                             $absensiUrl = \Illuminate\Support\Facades\Route::has('absensi') ? route('absensi.index') : '#';
                         @endphp
 
-                        <li class="nav-item">
-                            <a href="{{ $jadwalsayaUrl }}" class="nav-link {{ setActive(['jadwalsaya']) }}">
-                                <i class="bi bi-kanban"></i>
-                                <p>Jadwal Saya</p>
-                            </a>
-                        </li>
+
 
                         <li class="nav-item">
                             <a href="{{ route('absensi.index') }}" class="nav-link {{ setActive(['absensi.index']) }}">

@@ -37,7 +37,7 @@
                                     <td>{{ ucfirst($jadwal->hari) }}</td>
                                     <td>{{ $jadwal->jam_mulai }} - {{ $jadwal->jam_selesai }}</td>
                                     <td>
-                                        <a href="{{ route('absensi.show', $jadwal->id) }}" 
+                                        <a href="{{ route('absensi.show', $jadwal->id) }}"
                                            class="btn btn-success btn-sm">
                                            <i class="fas fa-clipboard-check"></i> Mulai Absen
                                         </a>
