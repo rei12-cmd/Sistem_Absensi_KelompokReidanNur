@@ -67,30 +67,30 @@ class SiswaController extends Controller
         return view('siswa.edit', compact('siswa', 'kelass'));
     }
 
-    public function update(Request $request, Guru $guru)
+    public function update(Request $request, Siswa $siswa)
     {
         $validated = $request->validate([
             'nama' => 'required|string|max:100',
-            'nip' => 'required|string|max:50|unique:guru,nip,' . $guru->id,
+            'nip' => 'required|string|max:50|unique:guru,nip,' . $siswa->id,
             'telepon' => 'nullable|string|max:20',
-            'email' => 'required|email|unique:users,email,' . $guru->user_id,
+            'email' => 'required|email|unique:users,email,' . $siswa->user_id,
             'password' => 'nullable|confirmed',
         ]);
 
-        $guru->user->update([
+        $siswa->user->update([
             'email' => $validated['email'],
             'password' => $validated['password']
                 ? Hash::make($validated['password'])
-                : $guru->user->password,
+                : $siswa->user->password,
         ]);
 
-        $guru->update([
+        $siswa->update([
             'nama' => $validated['nama'],
             'nip' => $validated['nip'],
             'telepon' => $validated['telepon'] ?? null,
         ]);
 
-        return redirect()->route('guru.index')->with('success', 'Data guru berhasil diperbarui!');
+        return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil diperbarui!');
     }
 
     public function destroy(Siswa $siswa)
