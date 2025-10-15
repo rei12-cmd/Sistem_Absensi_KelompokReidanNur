@@ -10,60 +10,30 @@ use App\Http\Controllers\MataPelajaranController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
+use App\Http\Controllers\Guru\LaporanController as GuruLaporanController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-use App\Http\Controllers\Admin\LaporanController;
-
 Route::get('/', function () {
-    if (Auth::check()) {
-        return redirect()->route('dashboard');
-    }
-    return redirect()->route('login');
+    return Auth::check() ? redirect()->route('dashboard') : redirect()->route('login');
 });
 
-// --------------------------------------------------------------------------
-// Public / Auth routes (login/logout)
-// --------------------------------------------------------------------------
 Route::get('/login', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('loginStore');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// --------------------------------------------------------------------------
-// Atur Mengajar (manajemen relasi guru-mapel-kelas)
-// --------------------------------------------------------------------------
-Route::get('/atur-mengajar', [JadwalController::class, 'aturIndex'])->name('atur-mengajar.index');
-Route::post('/atur-mengajar/store', [JadwalController::class, 'aturStore'])->name('atur-mengajar.store');
-Route::delete('/atur-mengajar/{id}', [JadwalController::class, 'aturDestroy'])->name('atur-mengajar.destroy');
+Route::middleware(['auth:web'])->group(function () {
 
-// --------------------------------------------------------------------------
-// Protected routes (auth)
-// --------------------------------------------------------------------------
-Route::middleware(['auth'])->group(function () {
-
-    // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // ----------------------------------------------------------------------
-    // ADMIN ONLY
-    // ----------------------------------------------------------------------
-    Route::group(['middleware' => ['role:admin']], function () {
+    Route::prefix('admin')->middleware('role:admin')->group(function () {
 
         Route::resource('jurusan', JurusanController::class);
         Route::resource('kelas', KelasController::class)->parameters(['kelas' => 'kelas']);
         Route::resource('guru', GuruController::class);
         Route::resource('mapel', MataPelajaranController::class);
-
-        // Siswa explicit route + resource
-        Route::get('siswa', [SiswaController::class, 'index'])->name('siswa.index');
-        Route::get('siswa/create', [SiswaController::class, 'create'])->name('siswa.create');
-        Route::post('siswa', [SiswaController::class, 'store'])->name('siswa.store');
-        Route::get('siswa/{siswa}/edit', [SiswaController::class, 'edit'])->name('siswa.edit');
-        Route::put('siswa/{siswa}', [SiswaController::class, 'update'])->name('siswa.update');
-        Route::delete('siswa/{siswa}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
         Route::resource('siswa', SiswaController::class);
-
-        // Wali + Jadwal
         Route::resource('wali', WaliController::class);
         Route::resource('jadwal', JadwalController::class);
 
@@ -71,38 +41,31 @@ Route::middleware(['auth'])->group(function () {
             return redirect()->route('jadwal.index');
         })->name('guru-mapel-kelas.index');
 
-        Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
-        Route::get('/laporan/siswa/{id}', [LaporanController::class, 'siswa'])->name('laporan.siswa');
+        Route::get('/laporan', [AdminLaporanController::class, 'index'])->name('laporan.index');
+        Route::get('/laporan/siswa/{id}', [AdminLaporanController::class, 'siswa'])->name('laporan.siswa');
     });
 
-    // ----------------------------------------------------------------------
-    // ADMIN & GURU
-    // ----------------------------------------------------------------------
-    Route::group(['middleware' => ['role:admin|guru']], function () {
+    Route::prefix('guru')->middleware('role:guru')->group(function () {
+        Route::get('jadwalsaya', [JadwalController::class, 'jadwalsaya'])->name('jadwalsaya');
+
+        Route::prefix('absensi')->group(function () {
+            Route::get('/', [AbsensiController::class, 'index'])->name('absensi.index');
+            Route::get('{id}', [AbsensiController::class, 'show'])->name('absensi.show');
+            Route::post('store', [AbsensiController::class, 'store'])->name('absensi.store');
+        });
+
+        Route::prefix('laporan')->group(function () {
+            Route::get('/', [GuruLaporanController::class, 'index'])->name('guru.laporan.index');
+            Route::get('kelas/{id}', [GuruLaporanController::class, 'kelas'])->name('guru.laporan.kelas');
+            Route::get('siswa/{id}', [GuruLaporanController::class, 'siswa'])->name('guru.laporan.siswa');
+        });
+    });
+
+    Route::prefix('siswa')->middleware('role:siswa')->group(function () {
 
     });
 
-    // ----------------------------------------------------------------------
-    // GURU ONLY
-    // ----------------------------------------------------------------------
-    Route::group(['middleware' => ['role:guru']], function () {
-        Route::get('/jadwalsaya', [JadwalController::class, 'jadwalsaya'])->name('jadwalsaya');
-        Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
-        Route::get('/absensi/{id}', [AbsensiController::class, 'show'])->name('absensi.show');
-        Route::post('/absensi/store', [AbsensiController::class, 'store'])->name('absensi.store');
-    });
+    Route::prefix('wali')->middleware('role:wali')->group(function () {
 
-    // ----------------------------------------------------------------------
-    // SISWA ONLY
-    // ----------------------------------------------------------------------
-    Route::group(['middleware' => ['role:siswa']], function () {
-      
-    });
-
-    // ----------------------------------------------------------------------
-    // WALI ONLY
-    // ----------------------------------------------------------------------
-    Route::group(['middleware' => ['role:wali']], function () {
-       
     });
 });

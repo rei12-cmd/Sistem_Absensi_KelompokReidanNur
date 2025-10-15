@@ -252,6 +252,15 @@
                         </li>
                     @endhasanyrole
 
+                    @hasanyrole('guru')
+                        <li class="nav-item">
+                            <a href="{{ route('guru.laporan.index') }}" class="nav-link {{ setActive(['guru.laporan.index', 'guru.laporan.kelas', 'guru.laporan.siswa']) }}">
+                                <i class="bi bi-info-lg"></i>
+                                <p>Laporan Absensi</p>
+                            </a>
+                        </li>
+                    @endhasanyrole
+
                     @if (auth()->user()->hasRole('siswa'))
                         @php
                             $absensisayaUrl = \Illuminate\Support\Facades\Route::has('absensisaya') ? route('absensisaya') : '#';
