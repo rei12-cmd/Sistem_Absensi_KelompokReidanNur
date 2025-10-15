@@ -243,12 +243,9 @@
                         </li>
                     @endif
 
-                    @hasanyrole('guru|admin')
-                        @php
-                            $laporanAbsensiUrl = \Illuminate\Support\Facades\Route::has('laporanabsensi') ? route('laporanabsensi') : ( \Illuminate\Support\Facades\Route::has('laporanabsensi.index') ? route('laporanabsensi.index') : '#' );
-                        @endphp
+                    @hasanyrole('admin')
                         <li class="nav-item">
-                            <a href="{{ $laporanAbsensiUrl }}" class="nav-link {{ setActive(['laporanabsensi']) }}">
+                            <a href="{{ route('laporan.index') }}" class="nav-link {{ setActive(['laporan.index', 'laporan.siswa']) }}">
                                 <i class="bi bi-info-lg"></i>
                                 <p>Laporan Absensi</p>
                             </a>

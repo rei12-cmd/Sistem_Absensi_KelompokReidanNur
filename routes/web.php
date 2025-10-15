@@ -9,26 +9,12 @@ use App\Http\Controllers\WaliController;
 use App\Http\Controllers\MataPelajaranController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\AbsensiController;
-use App\Http\Controllers\LaporanAbsensiController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Seluruh rute aplikasi. Root "/" di-redirect secara aman:
-| - jika user terautentikasi -> ke dashboard (route named 'dashboard')
-| - jika belum login -> ke halaman login
-|
-| Route 'dashboard' didefinisikan di dalam middleware auth supaya hanya
-| user yang sudah login yang dapat mengaksesnya.
-|
-*/
+use App\Http\Controllers\Admin\LaporanController;
 
-// Root: arahkan user tergantung status login
 Route::get('/', function () {
     if (Auth::check()) {
         return redirect()->route('dashboard');
@@ -84,6 +70,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/guru-mapel-kelas', function () {
             return redirect()->route('jadwal.index');
         })->name('guru-mapel-kelas.index');
+
+        Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+        Route::get('/laporan/siswa/{id}', [LaporanController::class, 'siswa'])->name('laporan.siswa');
     });
 
     // ----------------------------------------------------------------------
@@ -107,24 +96,13 @@ Route::middleware(['auth'])->group(function () {
     // SISWA ONLY
     // ----------------------------------------------------------------------
     Route::group(['middleware' => ['role:siswa']], function () {
-        Route::get('/absensisaya', [LaporanAbsensiController::class, 'absensisaya'])->name('absensisaya');
-        Route::get('/laporanabsensi/export/siswa', [LaporanAbsensiController::class, 'export'])
-            ->name('laporanabsensi.export.siswa');
+      
     });
 
     // ----------------------------------------------------------------------
     // WALI ONLY
     // ----------------------------------------------------------------------
     Route::group(['middleware' => ['role:wali']], function () {
-        Route::get('/absensianaksaya', [LaporanAbsensiController::class, 'absensianaksaya'])->name('absensianaksaya');
-        Route::get('/laporanabsensi/export/wali', [LaporanAbsensiController::class, 'export'])
-            ->name('laporanabsensi.export.wali');
+       
     });
-});
-
-// ==========================================================================
-// Tambahan Route fallback & testing (opsional untuk memastikan route hidup)
-// ==========================================================================
-Route::get('/cek-laporan', function () {
-    return redirect()->route('laporan.index');
 });
