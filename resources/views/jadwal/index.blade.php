@@ -28,7 +28,6 @@
                                 <i class="bi bi-folder-plus"></i> Tambah
                             </a>
 
-                            <!-- Tombol baru: Tambah Atur Mengajar -->
                             <a href="{{ route('atur-mengajar.index') }}" class="btn btn-primary btn-sm ms-2">
                                 <i class="bi bi-gear"></i> Tambah Atur Mengajar
                             </a>

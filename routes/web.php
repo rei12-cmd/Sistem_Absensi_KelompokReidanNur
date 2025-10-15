@@ -15,9 +15,7 @@ use App\Http\Controllers\Guru\LaporanController as GuruLaporanController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-Route::get('/', function () {
-    return Auth::check() ? redirect()->route('dashboard') : redirect()->route('login');
-});
+Route::get('/', fn() => Auth::check() ? redirect()->route('dashboard') : redirect()->route('login'));
 
 Route::get('/login', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('loginStore');
@@ -37,12 +35,14 @@ Route::middleware(['auth:web'])->group(function () {
         Route::resource('wali', WaliController::class);
         Route::resource('jadwal', JadwalController::class);
 
-        Route::get('/guru-mapel-kelas', function () {
-            return redirect()->route('jadwal.index');
-        })->name('guru-mapel-kelas.index');
+        Route::get('atur-mengajar', [JadwalController::class, 'aturIndex'])->name('atur-mengajar.index');
+        Route::post('atur-mengajar/store', [JadwalController::class, 'aturStore'])->name('atur-mengajar.store');
+        Route::delete('atur-mengajar/{id}', [JadwalController::class, 'aturDestroy'])->name('atur-mengajar.destroy');
 
-        Route::get('/laporan', [AdminLaporanController::class, 'index'])->name('laporan.index');
-        Route::get('/laporan/siswa/{id}', [AdminLaporanController::class, 'siswa'])->name('laporan.siswa');
+        Route::get('laporan', [AdminLaporanController::class, 'index'])->name('laporan.index');
+        Route::get('laporan/siswa/{id}', [AdminLaporanController::class, 'siswa'])->name('laporan.siswa');
+
+        Route::get('guru-mapel-kelas', fn() => redirect()->route('jadwal.index'))->name('guru-mapel-kelas.index');
     });
 
     Route::prefix('guru')->middleware('role:guru')->group(function () {
@@ -62,10 +62,11 @@ Route::middleware(['auth:web'])->group(function () {
     });
 
     Route::prefix('siswa')->middleware('role:siswa')->group(function () {
-
+ 
     });
 
     Route::prefix('wali')->middleware('role:wali')->group(function () {
 
     });
+
 });
