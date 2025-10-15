@@ -90,19 +90,7 @@ Route::middleware(['auth'])->group(function () {
     // ADMIN & GURU
     // ----------------------------------------------------------------------
     Route::group(['middleware' => ['role:admin|guru']], function () {
-        // Lama
-        Route::get('/laporanabsensi', [LaporanAbsensiController::class, 'index'])->name('laporanabsensi');
 
-        // 🔰 Laporan Absensi Baru (Lengkap)
-        Route::get('/laporan', [LaporanAbsensiController::class, 'index'])->name('laporan.index');
-        Route::get('/laporan/kelas/{kelas}/mapel/{mapel}', [LaporanAbsensiController::class, 'kelasDetail'])
-            ->name('laporan.kelas.detail');
-        Route::get('/laporan/siswa/{siswa}/mapel/{mapel}', [LaporanAbsensiController::class, 'siswaRekap'])
-            ->name('laporan.siswa.rekap');
-
-        // Export data laporan
-        Route::get('/laporanabsensi/export', [LaporanAbsensiController::class, 'export'])
-            ->name('laporanabsensi.export');
     });
 
     // ----------------------------------------------------------------------

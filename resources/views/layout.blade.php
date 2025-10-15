@@ -153,8 +153,8 @@
                         }
                     @endphp
 
-                    <li class="nav-item {{ setMenuOpen(['jurusan.index', 'jurusan.create', 'jurusan.edit', 'kelas.index', 'kelas.create', 'kelas.edit', 'guru.index', 'guru', 'siswa.index', 'siswa.create', 'siswa.edit',  'wali', 'mapel']) }}">
-                        <a href="#" class="nav-link {{ setActive(['jurusan.index','kelas.index','guru','guru.index','siswa.index', 'siswa.create', 'siswa.edit', 'mapel']) }}">
+                    <li class="nav-item {{ setMenuOpen(['jurusan.index', 'jurusan.create', 'jurusan.edit', 'kelas.index', 'kelas.create', 'kelas.edit', 'guru.index', 'guru', 'siswa.index', 'siswa.create', 'siswa.edit', 'wali.index', 'wali.create', 'wali.edit',  'wali', 'mapel']) }}">
+                        <a href="#" class="nav-link {{ setActive(['jurusan.index','kelas.index','guru','guru.index','siswa.index', 'siswa.create', 'siswa.edit', 'wali.index', 'wali.create', 'wali.edit', 'mapel']) }}">
                             <i class="nbi bi-clipboard-data"></i>
                             <p>
                                 Master Data
@@ -229,7 +229,6 @@
 
                     @if (auth()->user()->hasRole('guru'))
                         @php
-                            // guru-only routes: jadwalsaya & absensi (cek keberadaan nama rute sebelum menggunakan)
                             $jadwalsayaUrl = \Illuminate\Support\Facades\Route::has('jadwalsaya') ? route('jadwalsaya') : '#';
                             $absensiUrl = \Illuminate\Support\Facades\Route::has('absensi') ? route('absensi.index') : '#';
                         @endphp
