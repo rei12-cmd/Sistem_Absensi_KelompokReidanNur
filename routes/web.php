@@ -66,7 +66,8 @@ Route::middleware(['auth:web'])->group(function () {
     });
 
     Route::prefix('wali')->middleware('role:wali')->group(function () {
-
+        Route::get('absensiAnakSaya', [App\Http\Controllers\Wali\LaporanController::class, 'index'])->name('absensiAnakSaya.index');
+        Route::get('absensiAnakSaya/{id}', [App\Http\Controllers\Wali\LaporanController::class, 'show'])->name('absensiAnakSaya.show');
     });
 
 });

@@ -271,11 +271,8 @@
                     @endif
 
                     @if (auth()->user()->hasRole('wali'))
-                        @php
-                            $absensianaksayaUrl = \Illuminate\Support\Facades\Route::has('absensianaksaya') ? route('absensianaksaya') : '#';
-                        @endphp
                         <li class="nav-item">
-                            <a href="{{ $absensianaksayaUrl }}" class="nav-link {{ setActive(['absensianaksaya']) }}">
+                            <a href="{{ route('absensiAnakSaya.index') }}" class="nav-link {{ setActive(['absensiAnakSaya.index', 'absensiAnakSaya.show']) }}">
                                 <i class="bi bi-info-lg"></i>
                                 <p>Absensi Anak Saya</p>
                             </a>
