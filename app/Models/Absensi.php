@@ -8,6 +8,9 @@ class Absensi extends Model
 {
     protected $table = 'absensi';
     protected $fillable = ['jadwal_id', 'siswa_id', 'tanggal', 'status', 'keterangan'];
+    protected $casts = [
+        'tanggal' => 'date',
+    ];
 
     public function jadwal()
     {

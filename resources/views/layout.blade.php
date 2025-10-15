@@ -153,8 +153,8 @@
                         }
                     @endphp
 
-                    <li class="nav-item {{ setMenuOpen(['jurusan.index', 'jurusan.create', 'jurusan.edit', 'kelas.index', 'kelas.create', 'kelas.edit', 'guru.index', 'guru', 'siswa.index', 'siswa.create', 'siswa.edit',  'wali', 'mapel']) }}">
-                        <a href="#" class="nav-link {{ setActive(['jurusan.index','kelas.index','guru','guru.index','siswa.index', 'siswa.create', 'siswa.edit', 'mapel']) }}">
+                    <li class="nav-item {{ setMenuOpen(['jurusan.index', 'jurusan.create', 'jurusan.edit', 'kelas.index', 'kelas.create', 'kelas.edit', 'guru.index', 'guru', 'siswa.index', 'siswa.create', 'siswa.edit', 'wali.index', 'wali.create', 'wali.edit',  'wali', 'mapel']) }}">
+                        <a href="#" class="nav-link {{ setActive(['jurusan.index','kelas.index','guru','guru.index','siswa.index', 'siswa.create', 'siswa.edit', 'wali.index', 'wali.create', 'wali.edit', 'mapel']) }}">
                             <i class="nbi bi-clipboard-data"></i>
                             <p>
                                 Master Data
@@ -229,7 +229,6 @@
 
                     @if (auth()->user()->hasRole('guru'))
                         @php
-                            // guru-only routes: jadwalsaya & absensi (cek keberadaan nama rute sebelum menggunakan)
                             $jadwalsayaUrl = \Illuminate\Support\Facades\Route::has('jadwalsaya') ? route('jadwalsaya') : '#';
                             $absensiUrl = \Illuminate\Support\Facades\Route::has('absensi') ? route('absensi.index') : '#';
                         @endphp
@@ -244,12 +243,18 @@
                         </li>
                     @endif
 
-                    @hasanyrole('guru|admin')
-                        @php
-                            $laporanAbsensiUrl = \Illuminate\Support\Facades\Route::has('laporanabsensi') ? route('laporanabsensi') : ( \Illuminate\Support\Facades\Route::has('laporanabsensi.index') ? route('laporanabsensi.index') : '#' );
-                        @endphp
+                    @hasanyrole('admin')
                         <li class="nav-item">
-                            <a href="{{ $laporanAbsensiUrl }}" class="nav-link {{ setActive(['laporanabsensi']) }}">
+                            <a href="{{ route('laporan.index') }}" class="nav-link {{ setActive(['laporan.index', 'laporan.siswa']) }}">
+                                <i class="bi bi-info-lg"></i>
+                                <p>Laporan Absensi</p>
+                            </a>
+                        </li>
+                    @endhasanyrole
+
+                    @hasanyrole('guru')
+                        <li class="nav-item">
+                            <a href="{{ route('guru.laporan.index') }}" class="nav-link {{ setActive(['guru.laporan.index', 'guru.laporan.kelas', 'guru.laporan.siswa']) }}">
                                 <i class="bi bi-info-lg"></i>
                                 <p>Laporan Absensi</p>
                             </a>
@@ -257,11 +262,8 @@
                     @endhasanyrole
 
                     @if (auth()->user()->hasRole('siswa'))
-                        @php
-                            $absensisayaUrl = \Illuminate\Support\Facades\Route::has('absensisaya') ? route('absensisaya') : '#';
-                        @endphp
                         <li class="nav-item">
-                            <a href="{{ $absensisayaUrl }}" class="nav-link {{ setActive(['absensisaya']) }}">
+                            <a href="{{ route('absensiSaya') }}" class="nav-link {{ setActive(['absensiSaya']) }}">
                                 <i class="bi bi-info-lg"></i>
                                 <p>Absensi Saya</p>
                             </a>
@@ -269,11 +271,8 @@
                     @endif
 
                     @if (auth()->user()->hasRole('wali'))
-                        @php
-                            $absensianaksayaUrl = \Illuminate\Support\Facades\Route::has('absensianaksaya') ? route('absensianaksaya') : '#';
-                        @endphp
                         <li class="nav-item">
-                            <a href="{{ $absensianaksayaUrl }}" class="nav-link {{ setActive(['absensianaksaya']) }}">
+                            <a href="{{ route('absensiAnakSaya.index') }}" class="nav-link {{ setActive(['absensiAnakSaya.index', 'absensiAnakSaya.show']) }}">
                                 <i class="bi bi-info-lg"></i>
                                 <p>Absensi Anak Saya</p>
                             </a>

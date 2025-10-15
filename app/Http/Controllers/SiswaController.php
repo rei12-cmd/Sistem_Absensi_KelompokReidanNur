@@ -25,9 +25,7 @@ class SiswaController extends Controller
 
     public function store(Request $request)
     {
-
-
-         $jurusan = Kelas::find($request->input('kelas_id'));
+        $jurusan = Kelas::find($request->input('kelas_id'));
 
         $validated = $request->validate([
             'nis' => 'required|string|max:100',
@@ -61,23 +59,32 @@ class SiswaController extends Controller
         return redirect()->route('siswa.index')->with('success', 'Data guru berhasil ditambahkan!');
     }
 
-    public function edit(Siswa $siswa)
+    public function edit($id)
     {
-        $kelass = Kelas::get();
+        $siswa = Siswa::with('user')->findOrFail($id);
+        $kelass = Kelas::all();
+
         return view('siswa.edit', compact('siswa', 'kelass'));
     }
 
-    public function update(Request $request, Siswa $siswa)
+    public function update(Request $request, $id)
     {
+        $siswa = Siswa::with('user')->findOrFail($id);
+        $jurusan = Kelas::find($request->input('kelas_id'));
+
         $validated = $request->validate([
-            'nama' => 'required|string|max:100',
-            'nip' => 'required|string|max:50|unique:guru,nip,' . $siswa->id,
-            'telepon' => 'nullable|string|max:20',
-            'email' => 'required|email|unique:users,email,' . $siswa->user_id,
-            'password' => 'nullable|confirmed',
+            'nis' => 'required|string|max:100',
+            'nama' => 'required|string',
+            'username' => 'required|string',
+            'email' => 'required|email',
+            'kelas_id' => 'required',
+            'tanggal_lahir' => 'required|date',
+            'alamat' => 'required|string',
+            'password' => 'nullable|confirmed|min:6',
         ]);
 
         $siswa->user->update([
+            'username' => $validated['username'],
             'email' => $validated['email'],
             'password' => $validated['password']
                 ? Hash::make($validated['password'])
@@ -85,13 +92,17 @@ class SiswaController extends Controller
         ]);
 
         $siswa->update([
+            'nis' => $validated['nis'],
             'nama' => $validated['nama'],
-            'nip' => $validated['nip'],
-            'telepon' => $validated['telepon'] ?? null,
+            'kelas_id' => $validated['kelas_id'],
+            'jurusan_id' => $jurusan->jurusan_id,
+            'tanggal_lahir' => $validated['tanggal_lahir'],
+            'alamat' => $validated['alamat'],
         ]);
 
         return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil diperbarui!');
     }
+
 
     public function destroy(Siswa $siswa)
     {

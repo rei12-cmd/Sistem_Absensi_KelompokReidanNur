@@ -25,6 +25,11 @@ KP_Sistem_Absensi
     - dan seterusnya
 17. Selesai
 
+## Catatan
+```cmd
+Jangan ubah apapun yang sudah jalan
+```
+
 ## Jalankan Program
 ### Clone
 Kalau sudah, bisa dilewat
