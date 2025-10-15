@@ -11,15 +11,17 @@ KP_Sistem_Absensi
 7. CRUD Mata Pelajaran - selesai 
 8. Relasi Guru–Mapel–Kelas (pivot) - perlu cek lagi
 9. CRUD Jadwal - selesai 
-10. CRUD Siswa (terhubung ke kelas & jurusan) - selesai 
-11. CRUD Wali & Relasi Wali–Siswa - selesai
+10. CRUD Siswa (terhubung ke kelas & jurusan) - revisi
+11. CRUD Wali & Relasi Wali–Siswa - revisi
 12. Absensi (input guru berdasarkan jadwal)
-13. Laporan Absensi (akses sesuai role: admin, guru, siswa, wali)
+13. Laporan Absensi (akses sesuai role: admin, guru, siswa, wali) on progress
 14. Dashboard
 15. Checking All
 16. Revisi (Jika diperlukan)
-    - revisi fitur 1
-    - revisi fitur 2
+    - revisi fitur bagian wali, ketika tambah data wali datanya tidak tersimpan, fitur editnya tapi jalan (admin)
+    - revisi fitur bagian siswa bagian editnya tampilannya jadi double dan tidak bisa di update (admin)
+    - revisi fitur bagian wali, ketika ingin melihat laporan absensi anak saya tidak bisa diakses terdapat kode error(wali)
+    - buat profil tiap role
     - dan seterusnya
 17. Selesai
 
