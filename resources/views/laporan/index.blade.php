@@ -37,15 +37,26 @@
         </thead>
         <tbody>
           @forelse($list as $i => $row)
+            @php
+              $kelas = optional($row->kelas);
+              $mapel = optional($row->mapel);
+              $kelasId = $kelas->id ?? null;
+              $mapelId = $mapel->id ?? null;
+              $canLink = $kelasId && $mapelId;
+            @endphp
             <tr>
               <td>{{ $i + 1 }}</td>
-              <td>{{ $row->kelas->nama ?? '-' }}</td>
-              <td>{{ $row->mapel->nama ?? '-' }}</td>
+              <td>{{ $kelas->nama ?? '-' }}</td>
+              <td>{{ $mapel->nama ?? '-' }}</td>
               <td>
-                <a href="{{ route('laporan.kelas.detail', ['kelas' => $row->kelas->id, 'mapel' => $row->mapel->id]) }}"
-                   class="btn btn-sm btn-primary">
-                  Detail
-                </a>
+                @if($canLink)
+                  <a href="{{ route('laporan.kelas.detail', ['kelas' => $kelasId, 'mapel' => $mapelId]) }}"
+                     class="btn btn-sm btn-primary">
+                    Detail
+                  </a>
+                @else
+                  <button class="btn btn-sm btn-secondary" disabled>Detail</button>
+                @endif
               </td>
             </tr>
           @empty

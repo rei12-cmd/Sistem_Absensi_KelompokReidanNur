@@ -3,309 +3,100 @@
 namespace App\Http\Controllers;
 
 use App\Models\Siswa;
-use App\Models\Kelas;
-use App\Models\Jurusan;
 use App\Models\User;
+use App\Models\Kelas;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class SiswaController extends Controller
 {
-    /**
-     * Tampilkan daftar semua siswa
-     */
-    public function index(): View
+    public function index()
     {
-        $siswas = Siswa::with(['kelas', 'jurusan', 'user'])
-            ->orderBy('id', 'asc') // urut berdasarkan id agar item baru muncul di akhir
-            ->get();
-
+        $siswas = Siswa::with('user')->latest()->get();
         return view('siswa.index', compact('siswas'));
     }
 
-    /**
-     * Tampilkan form tambah siswa baru
-     */
-    public function create(): View
+    public function create()
     {
-        // Ambil daftar kelas & jurusan (pakai get())
-        $kelas = Kelas::orderBy('id', 'asc')->get();
-        $jurusan = Jurusan::orderBy('id', 'asc')->get();
-
-        // Ambil daftar users — beberapa project memakai kolom name/username/email.
-        // Coba beberapa opsi agar tidak error ketika kolom tidak ada.
-        $users = collect();
-
-        // Daftar kandidat kolom yang mungkin ada
-        $candidates = ['name', 'username', 'email'];
-
-        foreach ($candidates as $col) {
-            try {
-                // coba orderBy kolom yang tersedia
-                $users = User::orderBy($col, 'asc')->get();
-                // jika query berhasil, pakai hasilnya dan hentikan loop
-                break;
-            } catch (QueryException $e) {
-                // kolom tidak ada — catat dan lanjutkan ke kolom berikutnya
-                Log::warning("users orderBy failed for column '{$col}': " . $e->getMessage());
-                continue;
-            } catch (\Throwable $t) {
-                Log::error("Unexpected error when fetching users ordered by {$col}: " . $t->getMessage());
-                continue;
-            }
-        }
-
-        // Jika semua candidate gagal, fallback ke orderBy id
-        if ($users->isEmpty()) {
-            try {
-                $users = User::orderBy('id', 'asc')->get();
-            } catch (\Throwable $t) {
-                Log::error('Failed to fetch users fallback by id: ' . $t->getMessage());
-                $users = collect();
-            }
-        }
-
-        return view('siswa.create', compact('kelas', 'jurusan', 'users'));
+        $kelass = Kelas::get();
+        return view('siswa.create', compact('kelass'));
     }
 
-    /**
-     * Simpan siswa baru ke database
-     *
-     * Mendukung:
-     * - Mengaitkan ke user existing (kirim user_id)
-     * - Membuat user baru bila user_id kosong (kirim username,email,password,password_confirmation)
-     */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
-        $validated = $request->validate([
-            // user_id bisa dikosongkan jika ingin membuat user baru
-            'user_id' => 'nullable|exists:users,id',
-            'kelas_id' => 'required|exists:kelas,id',
-            'jurusan_id' => 'required|exists:jurusan,id',
-            'nis' => 'required|string|max:50|unique:siswa,nis',
-            'nama' => 'required|string|max:255',
-            'tanggal_lahir' => 'nullable|date',
-            'alamat' => 'nullable|string|max:1000',
 
-            // fields untuk membuat user baru jika user_id kosong
-            'username' => 'required_without:user_id|string|max:50|unique:users,username',
-            'email' => 'required_without:user_id|email|max:100|unique:users,email',
-            // password tidak lagi dipaksa min:8, hanya harus confirmed ketika dikirim
-            'password' => 'required_without:user_id|string|confirmed',
+
+         $jurusan = Kelas::find($request->input('kelas_id'));
+
+        $validated = $request->validate([
+            'nis' => 'required|string|max:100',
+            'nama' => 'required|string',
+            'username' => 'required|string',
+            'email' => 'required',
+            'kelas_id' => 'required',
+            'password' => 'required|confirmed',
+            'tanggal_lahir' => 'required',
+            'alamat' => 'required',
         ]);
 
-        DB::beginTransaction();
-        try {
-            // jika user_id dikirim, gunakan user tersebut
-            if (!empty($validated['user_id'])) {
-                $userId = $validated['user_id'];
-            } else {
-                // buat user baru
-                $user = User::create([
-                    'username' => $validated['username'],
-                    'email' => $validated['email'],
-                    'password' => Hash::make($validated['password']),
-                    // tambahkan field lain jika model User di-app Anda membutuhkan (role, is_active, dll.)
-                ]);
-                $userId = $user->id;
-            }
+        $user = User::create([
+            'username' => $validated['username'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+        ]);
 
-            // Simpan siswa
-            Siswa::create([
-                'user_id' => $userId,
-                'kelas_id' => $validated['kelas_id'],
-                'jurusan_id' => $validated['jurusan_id'],
-                'nis' => $validated['nis'],
-                'nama' => $validated['nama'],
-                'tanggal_lahir' => $validated['tanggal_lahir'] ?? null,
-                'alamat' => $validated['alamat'] ?? null,
-            ]);
+        $user->assignRole('siswa');
 
-            DB::commit();
-            return redirect()->route('siswa.index')->with('success', 'Siswa berhasil ditambahkan.');
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            Log::error('Gagal menyimpan siswa: ' . $e->getMessage());
-            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan siswa.');
-        }
+        Siswa::create([
+            'user_id' => $user->id,
+            'nama' => $validated['nama'],
+            'kelas_id' => $validated['kelas_id'],
+            'jurusan_id' => $jurusan->jurusan_id,
+            'nis' => $validated['nis'],
+            'tanggal_lahir' => $validated['tanggal_lahir'],
+            'alamat' => $validated['alamat'],
+        ]);
+
+        return redirect()->route('siswa.index')->with('success', 'Data guru berhasil ditambahkan!');
     }
 
-    /**
-     * Form edit siswa
-     */
-    public function edit(Siswa $siswa): View
+    public function edit(Siswa $siswa)
     {
-        $kelas = Kelas::orderBy('id', 'asc')->get();
-        $jurusan = Jurusan::orderBy('id', 'asc')->get();
-
-        // Ambil users sama robust seperti di create()
-        $users = collect();
-        $candidates = ['name', 'username', 'email'];
-        foreach ($candidates as $col) {
-            try {
-                $users = User::orderBy($col, 'asc')->get();
-                break;
-            } catch (QueryException $e) {
-                Log::warning("users orderBy failed for column '{$col}' (edit): " . $e->getMessage());
-                continue;
-            } catch (\Throwable $t) {
-                Log::error("Unexpected error when fetching users ordered by {$col} (edit): " . $t->getMessage());
-                continue;
-            }
-        }
-        if ($users->isEmpty()) {
-            try {
-                $users = User::orderBy('id', 'asc')->get();
-            } catch (\Throwable $t) {
-                Log::error('Failed to fetch users fallback by id (edit): ' . $t->getMessage());
-                $users = collect();
-            }
-        }
-
-        return view('siswa.edit', compact('siswa', 'kelas', 'jurusan', 'users'));
+        $kelass = Kelas::get();
+        return view('siswa.edit', compact('siswa', 'kelass'));
     }
 
-    /**
-     * Update siswa
-     *
-     * - Mendukung:
-     *   - Mengaitkan ulang ke user lain dengan mengirim user_id
-     *   - Memperbarui user terkait (username, email, password) jika dikirim
-     *   - Jika tidak ada user terkait tapi username/email dikirim, buat user baru dan kaitkan
-     */
-    public function update(Request $request, Siswa $siswa): RedirectResponse
+    public function update(Request $request, Guru $guru)
     {
-        // dasar validasi untuk siswa
-        $rules = [
-            'user_id' => 'nullable|exists:users,id',
-            'kelas_id' => 'required|exists:kelas,id',
-            'jurusan_id' => 'required|exists:jurusan,id',
-            'nis' => 'required|string|max:50|unique:siswa,nis,' . $siswa->id,
-            'nama' => 'required|string|max:255',
-            'tanggal_lahir' => 'nullable|date',
-            'alamat' => 'nullable|string|max:1000',
+        $validated = $request->validate([
+            'nama' => 'required|string|max:100',
+            'nip' => 'required|string|max:50|unique:guru,nip,' . $guru->id,
+            'telepon' => 'nullable|string|max:20',
+            'email' => 'required|email|unique:users,email,' . $guru->user_id,
+            'password' => 'nullable|confirmed',
+        ]);
 
-            // fields optional untuk update/creation user
-            'username' => 'nullable|string|max:50',
-            'email' => 'nullable|email|max:100',
-            // password optional, bila dikirim harus confirmed (tanpa batasan minimal)
-            'password' => 'nullable|string|confirmed',
-        ];
+        $guru->user->update([
+            'email' => $validated['email'],
+            'password' => $validated['password']
+                ? Hash::make($validated['password'])
+                : $guru->user->password,
+        ]);
 
-        $validated = $request->validate($rules);
+        $guru->update([
+            'nama' => $validated['nama'],
+            'nip' => $validated['nip'],
+            'telepon' => $validated['telepon'] ?? null,
+        ]);
 
-        DB::beginTransaction();
-        try {
-            // 1) Tangani relasi user: jika user_id diberikan -> kaitkan ke user itu
-            if (!empty($validated['user_id'])) {
-                $siswa->user_id = $validated['user_id'];
-            }
-
-            // 2) Tangani pembuatan / update user terkait
-            $currentUser = $siswa->user; // bisa null
-
-            // Jika ada username/email dikirim, periksa uniqueness dan apply:
-            if (!empty($validated['username'])) {
-                // jika currentUser ada, pastikan username unik kecuali milik currentUser
-                if ($currentUser) {
-                    $exists = User::where('username', $validated['username'])
-                        ->where('id', '!=', $currentUser->id)
-                        ->exists();
-                    if ($exists) {
-                        return redirect()->back()->withInput()->with('error', 'Username sudah dipakai oleh user lain.');
-                    }
-                    $currentUser->username = $validated['username'];
-                } else {
-                    // tidak ada user saat ini -> kita bisa buat user baru nanti (jika email & password juga ada)
-                }
-            }
-
-            if (!empty($validated['email'])) {
-                if ($currentUser) {
-                    $exists = User::where('email', $validated['email'])
-                        ->where('id', '!=', $currentUser->id)
-                        ->exists();
-                    if ($exists) {
-                        return redirect()->back()->withInput()->with('error', 'Email sudah dipakai oleh user lain.');
-                    }
-                    $currentUser->email = $validated['email'];
-                } else {
-                    // no current user, creation handled below if enough data
-                }
-            }
-
-            if (!empty($validated['password']) && $currentUser) {
-                $currentUser->password = Hash::make($validated['password']);
-            }
-
-            // Jika currentUser ada dan ada perubahan, simpan
-            if (!empty($currentUser) && $currentUser->isDirty()) {
-                $currentUser->save();
-            }
-
-            // Jika tidak ada currentUser dan user_id tidak dikirim, tapi ada data username+email (minimal)
-            if (empty($currentUser) && empty($validated['user_id']) && (!empty($validated['username']) || !empty($validated['email']))) {
-                // pastikan minimal username & email & password tersedia agar aman membuat user
-                // kita izinkan pembuatan user jika username & email tersedia; password boleh kosong (sesuaikan kebutuhan)
-                $usernameToCreate = $validated['username'] ?? null;
-                $emailToCreate = $validated['email'] ?? null;
-
-                if ($usernameToCreate && $emailToCreate) {
-                    // cek unique sebelum pembuatan
-                    $existsUsername = User::where('username', $usernameToCreate)->exists();
-                    $existsEmail = User::where('email', $emailToCreate)->exists();
-                    if ($existsUsername || $existsEmail) {
-                        DB::rollBack();
-                        return redirect()->back()->withInput()->with('error', 'Tidak dapat membuat user baru: username/email sudah terpakai.');
-                    }
-
-                    $userPayload = [
-                        'username' => $usernameToCreate,
-                        'email' => $emailToCreate,
-                        // jika password dikirim, hash; jika tidak, set password random atau kosong sesuai kebijakan
-                        'password' => !empty($validated['password']) ? Hash::make($validated['password']) : Hash::make(str()->random(12)),
-                    ];
-
-                    $newUser = User::create($userPayload);
-                    $siswa->user_id = $newUser->id;
-                }
-            }
-
-            // 3) Update field siswa
-            $siswa->kelas_id = $validated['kelas_id'];
-            $siswa->jurusan_id = $validated['jurusan_id'];
-            $siswa->nis = $validated['nis'];
-            $siswa->nama = $validated['nama'];
-            $siswa->tanggal_lahir = $validated['tanggal_lahir'] ?? null;
-            $siswa->alamat = $validated['alamat'] ?? null;
-
-            $siswa->save();
-
-            DB::commit();
-            return redirect()->route('siswa.index')->with('success', 'Siswa berhasil diperbarui.');
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            Log::error('Gagal memperbarui siswa (id='.$siswa->id.'): ' . $e->getMessage());
-            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat memperbarui siswa.');
-        }
+        return redirect()->route('guru.index')->with('success', 'Data guru berhasil diperbarui!');
     }
 
-    /**
-     * Hapus siswa
-     */
-    public function destroy(Siswa $siswa): RedirectResponse
+    public function destroy(Siswa $siswa)
     {
-        try {
-            $siswa->delete();
-            return redirect()->route('siswa.index')->with('success', 'Siswa berhasil dihapus.');
-        } catch (\Throwable $e) {
-            Log::error('Gagal menghapus siswa (id='.$siswa->id.'): ' . $e->getMessage());
-            return redirect()->route('siswa.index')->with('error', 'Terjadi kesalahan saat menghapus siswa.');
-        }
+        $siswa->user->delete();
+        $siswa->delete();
+        return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil dihapus!');
     }
 }

@@ -153,8 +153,8 @@
                         }
                     @endphp
 
-                    <li class="nav-item {{ setMenuOpen(['jurusan.index', 'jurusan.create', 'jurusan.edit', 'kelas.index', 'kelas.create', 'kelas.edit', 'guru.index', 'guru', 'siswa', 'wali', 'mapel']) }}">
-                        <a href="#" class="nav-link {{ setActive(['jurusan.index','kelas.index','guru','guru.index','siswa','mapel']) }}">
+                    <li class="nav-item {{ setMenuOpen(['jurusan.index', 'jurusan.create', 'jurusan.edit', 'kelas.index', 'kelas.create', 'kelas.edit', 'guru.index', 'guru', 'siswa.index', 'siswa.create', 'siswa.edit',  'wali', 'mapel']) }}">
+                        <a href="#" class="nav-link {{ setActive(['jurusan.index','kelas.index','guru','guru.index','siswa.index', 'siswa.create', 'siswa.edit', 'mapel']) }}">
                             <i class="nbi bi-clipboard-data"></i>
                             <p>
                                 Master Data

@@ -28,7 +28,7 @@ class GuruController extends Controller
             'nip' => 'required|string|max:50|unique:guru,nip',
             'telepon' => 'nullable|string|max:20',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6|confirmed',
+            'password' => 'required|confirmed',
         ]);
 
         $user = User::create([
@@ -61,7 +61,7 @@ class GuruController extends Controller
             'nip' => 'required|string|max:50|unique:guru,nip,' . $guru->id,
             'telepon' => 'nullable|string|max:20',
             'email' => 'required|email|unique:users,email,' . $guru->user_id,
-            'password' => 'nullable|min:6|confirmed',
+            'password' => 'nullable|confirmed',
         ]);
 
         $guru->user->update([

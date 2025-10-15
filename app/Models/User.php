@@ -46,4 +46,38 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // -----------------------------------------------------------------
+    // Relasi ke model lain (ditambahkan agar $user->guru / siswa / wali bekerja)
+    // -----------------------------------------------------------------
+
+    /**
+     * Relasi one-to-one ke tabel guru.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function guru()
+    {
+        return $this->hasOne(\App\Models\Guru::class, 'user_id');
+    }
+
+    /**
+     * Relasi one-to-one ke tabel siswa.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function siswa()
+    {
+        return $this->hasOne(\App\Models\Siswa::class, 'user_id');
+    }
+
+    /**
+     * Relasi one-to-one ke tabel wali.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function wali()
+    {
+        return $this->hasOne(\App\Models\Wali::class, 'user_id');
+    }
 }

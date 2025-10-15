@@ -1,204 +1,86 @@
 @extends('layout')
-@section('title', 'Wali - Create')
-
-@section('breadcumb')
-  <div class="row">
-    <div class="col-sm-6"><h3 class="mb-0">Wali</h3></div>
-    <div class="col-sm-6">
-      <ol class="breadcrumb float-sm-end">
-        <li class="breadcrumb-item">
-          @if(\Illuminate\Support\Facades\Route::has('wali.index'))
-            <a href="{{ route('wali.index') }}">Home</a>
-          @else
-            <a href="{{ url('/') }}">Home</a>
-          @endif
-        </li>
-        <li class="breadcrumb-item active">Create</li>
-      </ol>
-    </div>
-  </div>
-@endsection
+@section('title', 'Tambah Wali')
 
 @section('content')
-<div class="row">
-  <div class="col-md-6">
-    <div class="card">
-      <div class="card-header"><h3 class="card-title">Tambah Wali</h3></div>
-      <div class="card-body">
+<div class="card col-md-6">
+    <div class="card-header"><h5>Tambah Wali Baru</h5></div>
+    <div class="card-body">
+        <form method="POST" action="{{ route('wali.store') }}">
+            @csrf
 
-        {{-- fallback: pastikan variables tersedia agar view tidak crash --}}
-        @php
-          $usersList = $users ?? collect();
-          $sList = $siswas ?? collect();
-          $storeAction = \Illuminate\Support\Facades\Route::has('wali.store') ? route('wali.store') : url('/wali');
-        @endphp
 
-        <form method="POST" action="{{ $storeAction }}" onsubmit="disableSubmitButton()">
-          @csrf
 
-          {{-- user_id --}}
-          {{-- user_id dropdown (kosongkan untuk buat akun baru) --}}
-                        <div class="mb-3">
-                            <label for="user_id" class="form-label">Akun User</label>
-                            <select class="form-control @error('user_id') is-invalid @enderror"
-                                    id="user_id" name="user_id">
-                                <option value="">-- Pilih Akun (kosongkan untuk buat akun baru) --</option>
+            <div class="mb-3">
+                <label>Nama Wali</label>
+                <input type="text" name="nama" class="form-control" value="{{ old('nama') }}">
+                @error('nama')<small class="text-danger">{{ $message }}</small>@enderror
+            </div>
 
-                                @php $usersList = $users ?? collect(); @endphp
-                                @if($usersList->count())
-                                    @foreach($usersList as $user)
-                                        <option value="{{ $user->id }}"
-                                            {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                                            {{ $user->username ?? $user->name ?? $user->email ?? ('User '.$user->id) }}
-                                            @if(isset($user->email)) ({{ $user->email }}) @endif
-                                        </option>
-                                    @endforeach
-                                @endif
-                            </select>
-                            @error('user_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="form-text text-muted">Pilih akun jika sudah tersedia. Jika tidak, isi Username/Email/Password di bawah untuk membuat akun baru.</small>
-                        </div>
+            <div class="mb-3">
+                <label>Username</label>
+                <input type="username" name="username" class="form-control" value="{{ old('username') }}">
+                @error('username')<small class="text-danger">{{ $message }}</small>@enderror
+            </div>
 
-                        <hr>
+            <div class="mb-3">
+                <label>Email</label>
+                <input type="email" name="email" class="form-control" value="{{ old('email') }}">
+                @error('email')<small class="text-danger">{{ $message }}</small>@enderror
+            </div>
 
-                        {{-- Account fields (untuk membuat user baru jika user_id kosong) --}}
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Username</label>
-                            <input id="username" name="username" type="text"
-                                   class="form-control @error('username') is-invalid @enderror"
-                                   value="{{ old('username') }}" placeholder="Masukkan username">
-                            @error('username')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
 
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input id="email" name="email" type="email"
-                                   class="form-control @error('email') is-invalid @enderror"
-                                   value="{{ old('email') }}" placeholder="Masukkan email">
-                            @error('email')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+             @error('siswa')
+            <span class="badge bg-danger">{{ $message }}</span>
+            @enderror
+            <div class="mb-3">
+                <label for="siswa" class="form-label">siswa</label>
+                <select name="siswa" class="form-select" id="multiple-select-field" data-placeholder="Choose anything" multiple>
+                    <option value="">Pilih siswa</option>
+                    @foreach($siswas as $siswa)
+                        <option value="{{ $siswa->id }}">{{ $siswa->nama }} ( {{ $siswa->nis }} )</option>
+                    @endforeach
+                </select>
+            </div>
 
-                        <div class="row gx-2">
-                            <div class="col-md-6 mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <input id="password" name="password" type="password"
-                                       class="form-control @error('password') is-invalid @enderror"
-                                       placeholder="Masukkan password">
-                                @error('password')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+            <div class="mb-3">
+                <label>Password</label>
+                <input type="password" name="password" class="form-control">
+                @error('password')<small class="text-danger">{{ $message }}</small>@enderror
+            </div>
 
-                            <div class="col-md-6 mb-3">
-                                <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
-                                <input id="password_confirmation" name="password_confirmation" type="password"
-                                       class="form-control @error('password_confirmation') is-invalid @enderror"
-                                       placeholder="Ketik ulang password">
-                                @error('password_confirmation')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
+            <div class="mb-3">
+                <label>Konfirmasi Password</label>
+                <input type="password" name="password_confirmation" class="form-control">
+            </div>
 
-                        <hr>
-          <div class="mb-3">
-            <label for="user_id" class="form-label">Akun User <span class="text-danger">*</span></label>
+            <div class="mb-3">
+                <label>Alamat</label>
+                <input type="text" name="alamat" class="form-control" value="{{ old('alamat') }}">
+            </div>
 
-            @if($usersList->isEmpty())
-              <select id="user_id" name="user_id" class="form-control is-invalid" required>
-                <option value="">-- Tidak ada akun user tersedia --</option>
-              </select>
-              <div class="invalid-feedback">Belum ada akun user. Silakan buat akun terlebih dahulu.</div>
-            @else
-              <select id="user_id" name="user_id" class="form-control @error('user_id') is-invalid @enderror" required>
-                <option value="">-- Pilih Akun --</option>
-                @foreach($usersList as $u)
-                  <option value="{{ $u->id }}" {{ old('user_id') == $u->id ? 'selected' : '' }}>
-                    {{ $u->username ?? $u->name ?? $u->email ?? ('User '.$u->id) }}
-                  </option>
-                @endforeach
-              </select>
-              @error('user_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
-            @endif
-          </div>
+             <div class="mb-3">
+                <label>Telepon</label>
+                <input type="text" name="telepon" class="form-control" value="{{ old('telepon') }}">
+            </div>
 
-          {{-- nama --}}
-          <div class="mb-3">
-            <label for="nama" class="form-label">Nama <span class="text-danger">*</span></label>
-            <input id="nama" name="nama" class="form-control @error('nama') is-invalid @enderror" value="{{ old('nama') }}" required>
-            @error('nama') <div class="invalid-feedback">{{ $message }}</div> @enderror
-          </div>
-
-          {{-- telepon --}}
-          <div class="mb-3">
-            <label for="telepon" class="form-label">Telepon</label>
-            <input id="telepon" name="telepon" class="form-control @error('telepon') is-invalid @enderror" value="{{ old('telepon') }}">
-            @error('telepon') <div class="invalid-feedback">{{ $message }}</div> @enderror
-          </div>
-
-          {{-- alamat --}}
-          <div class="mb-3">
-            <label for="alamat" class="form-label">Alamat</label>
-            <textarea id="alamat" name="alamat" class="form-control @error('alamat') is-invalid @enderror" rows="2">{{ old('alamat') }}</textarea>
-            @error('alamat') <div class="invalid-feedback">{{ $message }}</div> @enderror
-          </div>
-
-          {{-- siswa multi-select --}}
-          <div class="mb-3">
-            <label for="siswa_ids" class="form-label">Pilih Siswa (relasi)</label>
-
-            @if($sList->isEmpty())
-              <select id="siswa_ids" name="siswa_ids[]" class="form-control" multiple disabled>
-                <option value="">-- Tidak ada data siswa --</option>
-              </select>
-              <div class="form-text text-muted">Belum ada siswa untuk direlasikan.</div>
-            @else
-              <select id="siswa_ids" name="siswa_ids[]" class="form-control" multiple>
-                @foreach($sList as $s)
-                  <option value="{{ $s->id }}" {{ (is_array(old('siswa_ids')) && in_array($s->id, old('siswa_ids'))) ? 'selected' : '' }}>
-                    {{ $s->nama ?? $s->nis }}
-                  </option>
-                @endforeach
-              </select>
-              <small class="text-muted">Tekan Ctrl (Cmd) untuk pilih lebih dari satu.</small>
-            @endif
-          </div>
-
-          <div class="d-flex gap-2">
-            @if(\Illuminate\Support\Facades\Route::has('wali.index'))
-              <a href="{{ route('wali.index') }}" class="btn btn-secondary">Kembali</a>
-            @else
-              <a href="{{ url('/wali') }}" class="btn btn-secondary">Kembali</a>
-            @endif
-
-            <button type="submit" class="btn btn-primary" id="submit-btn">
-              <span id="button-text">Simpan Wali</span>
-              <span id="loading-spinner" class="spinner-border spinner-border-sm" style="display:none"></span>
-            </button>
-          </div>
+            <button class="btn btn-primary">Simpan</button>
         </form>
-      </div>
     </div>
-  </div>
 </div>
 @endsection
 
-@push('scripts')
-<script>
-function disableSubmitButton(){
-  const submitButton = document.getElementById('submit-btn');
-  const spinner = document.getElementById('loading-spinner');
-  const buttonText = document.getElementById('button-text');
 
-  submitButton.disabled = true;
-  spinner.style.display = 'inline-block';
-  buttonText.textContent = 'Menyimpan...';
-}
+@push('scripts')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+
+
+    $( '#multiple-select-field' ).select2( {
+    theme: "bootstrap-5",
+    width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
+    placeholder: $( this ).data( 'placeholder' ),
+    closeOnSelect: false,
+} );
 </script>
 @endpush

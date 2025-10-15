@@ -24,7 +24,8 @@ class LaporanAbsensiController extends Controller
     {
         $user = Auth::user();
 
-        $guruId = $user->guru->id ?? $user->guru_id ?? null;
+        // gunakan optional agar tidak error ketika user->guru null
+        $guruId = optional($user->guru)->id ?? $user->guru_id ?? null;
 
         if (!$guruId) {
             $list = collect();
@@ -54,8 +55,7 @@ class LaporanAbsensiController extends Controller
             ];
         });
 
-        dd($list);
-
+        // dd removed so view can render
         return view('laporan.index', compact('list'));
     }
 
@@ -200,7 +200,8 @@ class LaporanAbsensiController extends Controller
      */
     public function export(Request $request)
     {
-        $guruId = Auth::user()->guru->id ?? null;
+        $user = Auth::user();
+        $guruId = optional($user->guru)->id ?? null;
         if (!$guruId) {
             return back()->with('error', 'Guru tidak ditemukan.');
         }
