@@ -62,7 +62,7 @@ Route::middleware(['auth:web'])->group(function () {
     });
 
     Route::prefix('siswa')->middleware('role:siswa')->group(function () {
- 
+        Route::get('/absensi-saya', [App\Http\Controllers\Siswa\LaporanController::class, 'index'])->name('absensiSaya');
     });
 
     Route::prefix('wali')->middleware('role:wali')->group(function () {

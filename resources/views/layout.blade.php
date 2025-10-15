@@ -262,11 +262,8 @@
                     @endhasanyrole
 
                     @if (auth()->user()->hasRole('siswa'))
-                        @php
-                            $absensisayaUrl = \Illuminate\Support\Facades\Route::has('absensisaya') ? route('absensisaya') : '#';
-                        @endphp
                         <li class="nav-item">
-                            <a href="{{ $absensisayaUrl }}" class="nav-link {{ setActive(['absensisaya']) }}">
+                            <a href="{{ route('absensiSaya') }}" class="nav-link {{ setActive(['absensiSaya']) }}">
                                 <i class="bi bi-info-lg"></i>
                                 <p>Absensi Saya</p>
                             </a>
