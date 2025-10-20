@@ -6,6 +6,7 @@
     <div class="card">
         <div class="card-body">
             <h3>Tambah Wali</h3>
+
 <form action="{{ route('wali.store') }}" method="POST">
     @csrf
     <div class="mb-3">

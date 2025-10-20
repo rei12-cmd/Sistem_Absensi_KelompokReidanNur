@@ -18,10 +18,11 @@ KP_Sistem_Absensi
 14. Dashboard
 15. Checking All
 16. Revisi (Jika diperlukan)
-    - revisi fitur bagian wali, ketika tambah data wali datanya tidak tersimpan, fitur editnya tapi jalan (admin)
-    - revisi fitur bagian siswa bagian editnya tampilannya jadi double dan tidak bisa di update (admin)
-    - revisi fitur bagian wali, ketika ingin melihat laporan absensi anak saya tidak bisa diakses terdapat kode error(wali)
-    - buat profil tiap role
+    - revisi fitur bagian wali, ketika tambah data wali datanya tidak tersimpan, fitur editnya dan hapus sudah jalan (admin)
+    - revisi fitur bagian jadwal ketika edit jamnya error (admin)
+    - buat profil tiap role 
+    - buat tampilan dashboard
+    - harus menambahkan paginate tiap bagian seperti siswa, guru, dan sebagainya
     - dan seterusnya
 17. Selesai
 

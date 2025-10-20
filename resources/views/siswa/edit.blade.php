@@ -11,28 +11,28 @@
 
             <div class="mb-3">
                 <label>NIS</label>
-                <input type="text" name="nis" class="form-control" 
+                <input type="text" name="nis" class="form-control"
                        value="{{ old('nis', $siswa->nis) }}">
                 @error('nis')<small class="text-danger">{{ $message }}</small>@enderror
             </div>
 
             <div class="mb-3">
                 <label>Nama Siswa</label>
-                <input type="text" name="nama" class="form-control" 
+                <input type="text" name="nama" class="form-control"
                        value="{{ old('nama', $siswa->nama) }}">
                 @error('nama')<small class="text-danger">{{ $message }}</small>@enderror
             </div>
 
             <div class="mb-3">
                 <label>Username</label>
-                <input type="text" name="username" class="form-control" 
+                <input type="text" name="username" class="form-control"
                        value="{{ old('username', $siswa->user->username) }}">
                 @error('username')<small class="text-danger">{{ $message }}</small>@enderror
             </div>
 
             <div class="mb-3">
                 <label>Email</label>
-                <input type="email" name="email" class="form-control" 
+                <input type="email" name="email" class="form-control"
                        value="{{ old('email', $siswa->user->email) }}">
                 @error('email')<small class="text-danger">{{ $message }}</small>@enderror
             </div>
@@ -42,7 +42,7 @@
                 <select class="form-control" id="kelas_id" name="kelas_id">
                     <option value="">Pilih kelas</option>
                     @foreach($kelass as $kelas)
-                        <option value="{{ $kelas->id }}" 
+                        <option value="{{ $kelas->id }}"
                             {{ old('kelas_id', $siswa->kelas_id) == $kelas->id ? 'selected' : '' }}>
                             {{ $kelas->nama }}
                         </option>
@@ -53,14 +53,14 @@
 
             <div class="mb-3">
                 <label>Tanggal Lahir</label>
-                <input type="date" name="tanggal_lahir" class="form-control" 
+                <input type="date" name="tanggal_lahir" class="form-control"
                        value="{{ old('tanggal_lahir', $siswa->tanggal_lahir) }}">
                 @error('tanggal_lahir')<small class="text-danger">{{ $message }}</small>@enderror
             </div>
 
             <div class="mb-3">
                 <label>Alamat</label>
-                <input type="text" name="alamat" class="form-control" 
+                <input type="text" name="alamat" class="form-control"
                        value="{{ old('alamat', $siswa->alamat) }}">
                 @error('alamat')<small class="text-danger">{{ $message }}</small>@enderror
             </div>
