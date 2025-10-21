@@ -9,6 +9,7 @@ use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class AbsensiController extends Controller
 {
@@ -47,10 +48,20 @@ class AbsensiController extends Controller
         $kelasId = $jadwal->guruMapelKelas->kelas->id;
         $siswas = Siswa::where('kelas_id', $kelasId)
             ->orderBy('nama', 'asc')
-            ->get();
+            ->paginate(10);
 
-        return view('absensi.form', compact('jadwal', 'siswas'));
+        $now = Carbon::now();
+        $hariSekarang = strtolower($now->translatedFormat('l')); 
+        $hariJadwal = strtolower($jadwal->hari);
+
+        $jamMulai = Carbon::parse($jadwal->jam_mulai);
+        $jamSelesai = Carbon::parse($jadwal->jam_selesai);
+
+        $bisaAbsensi = ($hariSekarang == $hariJadwal) && $now->between($jamMulai, $jamSelesai);
+
+        return view('absensi.form', compact('jadwal', 'siswas', 'bisaAbsensi'));
     }
+
 
     public function store(Request $request)
     {

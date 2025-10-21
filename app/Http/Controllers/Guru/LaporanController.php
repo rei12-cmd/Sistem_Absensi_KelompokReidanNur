@@ -21,20 +21,25 @@ class LaporanController extends Controller
 
     public function kelas($id)
     {
-        $gmk = GuruMapelKelas::with('kelas','mataPelajaran','guru')->findOrFail($id);
-        $absensi = $gmk->jadwal()->with('absensi.siswa')->get()->flatMap->absensi;
+        $gmk = GuruMapelKelas::with(['guru', 'kelas.siswa', 'mataPelajaran'])->findOrFail($id);
 
-        return view('laporan.guru.kelas', compact('gmk','absensi'));
+        $absensi = Absensi::whereHas('jadwal', function ($q) use ($id) {
+            $q->where('guru_mapel_kelas_id', $id);
+        })->get();
+
+        $siswa = $gmk->kelas->siswa()->paginate(10);
+
+        return view('laporan.guru.kelas', compact('gmk', 'absensi', 'siswa'));
     }
 
     public function siswa($id)
     {
-        $absensi = Absensi::with('jadwal.guruMapelKelas.mataPelajaran')
+        $absensi = Absensi::with(['siswa', 'jadwal.guruMapelKelas.mataPelajaran'])
             ->where('siswa_id', $id)
-            ->whereHas('jadwal.guruMapelKelas', function($q){
-                $q->where('guru_id', auth()->user()->guru->id);
-            })->get();
+            ->orderBy('tanggal', 'desc')
+            ->paginate(10);
 
         return view('laporan.guru.siswa', compact('absensi'));
     }
+
 }
