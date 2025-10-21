@@ -3,83 +3,58 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\View\View;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
-use Illuminate\Database\QueryException;
+use App\Models\Siswa;
+use App\Models\Guru;
+use App\Models\Wali;
+use App\Models\Kelas;
+use App\Models\Jurusan;
+use App\Models\MataPelajaran;
+use App\Models\Jadwal;
+use App\Models\Absensi;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    /**
-     * Tampilkan dashboard.
-     * Mengirimkan data statistik absensi dan data chart.
-     *
-     * NOTE:
-     * - Sesuaikan nama tabel/kolom jika di database kamu beda.
-     * - File ini aman: jika query gagal (tabel belum ada), view tetap akan menerima default values.
-     */
-    public function index(): View
+    public function index()
     {
-        $today = Carbon::today()->toDateString();
+        $user = Auth::user();
 
-        // Default values (jika query gagal)
-        $totalSiswa = 0;
-        $hadirToday = 0;
-        $izinSakitToday = 0;
-        $totalAbsensi = 0;
-        $pengumumans = collect();
-        $chartLabels = collect();
-        $chartValues = collect();
+        if ($user->hasRole('admin')) {
+            $data = [
+                'totalSiswa' => Siswa::count(),
+                'totalGuru' => Guru::count(),
+                'totalWali' => Wali::count(),
+                'totalKelas' => Kelas::count(),
+                'totalJurusan' => Jurusan::count(),
+                'totalMapel' => MataPelajaran::count(),
+            ];
 
-        try {
-            // Hitung total siswa
-            $totalSiswa = DB::table('siswa')->count();
-
-            // Kehadiran hari ini (sesuaikan kolom 'tanggal' & nilai 'Hadir' jika berbeda)
-            $hadirToday = DB::table('absensi')
-                ->whereDate('tanggal', $today)   // kalau pakai created_at -> whereDate('created_at', $today)
-                ->where('status', 'Hadir')
-                ->count();
-
-            // Izin / Sakit hari ini
-            $izinSakitToday = DB::table('absensi')
-                ->whereDate('tanggal', $today)
-                ->whereIn('status', ['Izin', 'Sakit'])
-                ->count();
-
-            // Total record absensi
-            $totalAbsensi = DB::table('absensi')->count();
-
-            // Pengumuman terbaru (ambil 3)
-            $pengumumans = DB::table('pengumuman')
-                ->orderBy('created_at', 'desc')
-                ->limit(3)
-                ->get();
-
-            // Data chart: jumlah siswa per jurusan
-            $jurusanData = DB::table('jurusan')
-                ->leftJoin('siswa', 'jurusan.id', '=', 'siswa.jurusan_id')
-                ->select('jurusan.nama as nama', DB::raw('COUNT(siswa.id) as total'))
-                ->groupBy('jurusan.nama')
-                ->get();
-
-            $chartLabels = $jurusanData->pluck('nama');
-            $chartValues = $jurusanData->pluck('total');
-
-        } catch (QueryException $e) {
-            // Log error agar bisa diperiksa, namun aplikasi tetap tidak crash
-            Log::error('Dashboard query error: ' . $e->getMessage());
+            return view('dashboard.admin', compact('data'));
         }
 
-        return view('dashboard', [
-            'totalSiswa' => $totalSiswa,
-            'hadirToday' => $hadirToday,
-            'izinSakitToday' => $izinSakitToday,
-            'totalAbsensi' => $totalAbsensi,
-            'pengumumans' => $pengumumans,
-            'chartLabels' => $chartLabels,
-            'chartValues' => $chartValues,
-        ]);
+        if ($user->hasRole('guru')) {
+            $guru = Guru::where('user_id', $user->id)->first();
+            $jadwal = Jadwal::with(['guruMapelKelas.kelas', 'guruMapelKelas.mataPelajaran'])
+                ->whereHas('guruMapelKelas', fn($q) => $q->where('guru_id', $guru->id))
+                ->get();
+
+            return view('dashboard.guru', compact('guru', 'jadwal'));
+        }
+
+        if ($user->hasRole('siswa')) {
+            $siswa = Siswa::with(['kelas', 'jurusan'])->where('user_id', $user->id)->first();
+            $absensi = Absensi::where('siswa_id', $siswa->id)->latest()->take(5)->get();
+
+            return view('dashboard.siswa', compact('siswa', 'absensi'));
+        }
+
+        if ($user->hasRole('wali')) {
+            $wali = Wali::where('user_id', $user->id)->first();
+            $siswaList = $wali->siswa()->with(['kelas', 'jurusan'])->get();
+
+            return view('dashboard.wali', compact('wali', 'siswaList'));
+        }
+
+        abort(403);
     }
 }

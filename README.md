@@ -20,8 +20,8 @@ KP_Sistem_Absensi
 16. Revisi (Jika diperlukan)
     - revisi fitur bagian wali, ketika tambah data wali datanya tidak tersimpan, fitur editnya dan hapus sudah jalan (admin) -> Clear
     - revisi fitur bagian jadwal ketika edit jamnya error (admin) -> Clear
-    - buat profil tiap role 
-    - buat tampilan dashboard
+    - buat profil tiap role -> tidak ada juga tidak apa2, bisa ditambahkan jika waktunya masih ada
+    - buat tampilan dashboard -> Clear(Minimalis)
     - harus menambahkan paginate tiap bagian seperti siswa, guru, dan sebagainya
     - dan seterusnya
 17. Selesai
