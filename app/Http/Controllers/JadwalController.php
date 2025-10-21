@@ -118,12 +118,13 @@ class JadwalController extends Controller
         return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil ditambahkan.');
     }
 
-    /**
-     * Form edit jadwal
-     */
-    public function edit(Jadwal $jadwal): View
+    public function edit(Jadwal $jadwal)
     {
-        $relations = GuruMapelKelas::with(['guru', 'mataPelajaran', 'kelas'])->get();
+        $jadwal->jam_mulai = str_replace('.', ':', substr($jadwal->jam_mulai, 0, 5));
+        $jadwal->jam_selesai = str_replace('.', ':', substr($jadwal->jam_selesai, 0, 5));
+
+        $relations = GuruMapelKelas::with(['guru','mataPelajaran','kelas'])->get();
+
         return view('jadwal.edit', compact('jadwal', 'relations'));
     }
 
