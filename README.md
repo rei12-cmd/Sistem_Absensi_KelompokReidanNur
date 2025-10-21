@@ -22,7 +22,7 @@ KP_Sistem_Absensi
     - revisi fitur bagian jadwal ketika edit jamnya error (admin) -> Clear
     - buat profil tiap role -> tidak ada juga tidak apa2, bisa ditambahkan jika waktunya masih ada
     - buat tampilan dashboard -> Clear(Minimalis)
-    - harus menambahkan paginate tiap bagian seperti siswa, guru, dan sebagainya
+    - harus menambahkan paginate tiap bagian seperti siswa, guru, dan sebagainya -> Clear
     - dan seterusnya
 17. Selesai
 
