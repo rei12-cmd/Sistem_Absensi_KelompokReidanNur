@@ -24,6 +24,14 @@ KP_Sistem_Absensi
     - buat tampilan dashboard -> Clear(Minimalis)
     - harus menambahkan paginate tiap bagian seperti siswa, guru, dan sebagainya -> Clear
     - dan seterusnya
+    - fitur guru ketika tambah data harusnya ke nomor terakhir bukan di no awal (tambahkan get) 
+    - fitur tambah wali ketika tambah data wali setelah mengisi form dan memencet tombol simpan , datanya tidak tesimpan di laptop saya entah kenapa tidak tersimpan terus. 
+    - fitur siswa ketika tambah data harusnya ke nomor terakhir bukan di no awal
+    - laporan absen tinggal nambahin presentase kehadiran
+    - fitur atur mengajar tambahkan paginate, dirapihkan lagi tombolnya 
+    - bagian (guru) fitur absensi kenapa tidak ada data siswa ketika akan mengabsen siswa padahal sesuai dengan jam jadwalnya
+    - pengembangan tampilan dashboard dan tampilan all role  
+    - seterusnya
 17. Selesai
 
 ## Catatan
