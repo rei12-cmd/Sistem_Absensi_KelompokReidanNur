@@ -79,7 +79,7 @@
             $('#jadwal-mengajar').DataTable({
                 "pageLength": 10,
                 "lengthMenu": [5, 10, 25, 50],
-                "order": [[3, 'asc']], // urutkan berdasarkan hari
+                "order": [[3, 'asc']],
                 "language": {
                     "lengthMenu": "Tampilkan _MENU_ data per halaman",
                     "zeroRecords": "Tidak ada jadwal ditemukan",

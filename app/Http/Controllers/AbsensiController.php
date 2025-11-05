@@ -50,6 +50,8 @@ class AbsensiController extends Controller
             ->orderBy('nama', 'asc')
             ->paginate(10);
 
+        Carbon::setLocale('id');
+
         $now = Carbon::now();
         $hariSekarang = strtolower($now->translatedFormat('l')); 
         $hariJadwal = strtolower($jadwal->hari);
@@ -57,7 +59,7 @@ class AbsensiController extends Controller
         $jamMulai = Carbon::parse($jadwal->jam_mulai);
         $jamSelesai = Carbon::parse($jadwal->jam_selesai);
 
-        $bisaAbsensi = ($hariSekarang == $hariJadwal) && $now->between($jamMulai, $jamSelesai);
+        $bisaAbsensi = ($hariSekarang == $hariJadwal);
 
         return view('absensi.form', compact('jadwal', 'siswas', 'bisaAbsensi'));
     }

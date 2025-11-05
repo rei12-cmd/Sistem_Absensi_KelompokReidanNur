@@ -18,7 +18,6 @@
 
 @section('content')
 <div class="container-fluid">
-    {{-- Info Jadwal --}}
     @if($jadwal)
     <div class="card mb-3 border-success">
         <div class="card-body">
@@ -32,13 +31,11 @@
     </div>
     @endif
 
-    {{-- Jika di luar jam pelajaran --}}
     @if(!$bisaAbsensi)
         <div class="alert alert-warning text-center">
             <i class="fas fa-clock"></i> Absensi hanya bisa dilakukan pada hari dan jam pelajaran.
         </div>
     @else
-    {{-- Form Absensi --}}
     <div class="card border-success shadow-sm">
         <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Form Absensi Siswa</h5>
@@ -103,6 +100,7 @@
 @endsection
 
 @push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
         $('#hadirkan-semua').on('click', function() {
