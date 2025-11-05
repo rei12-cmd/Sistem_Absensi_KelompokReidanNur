@@ -18,19 +18,15 @@ KP_Sistem_Absensi
 14. Dashboard
 15. Checking All
 16. Revisi (Jika diperlukan)
-    - revisi fitur bagian wali, ketika tambah data wali datanya tidak tersimpan, fitur editnya dan hapus sudah jalan (admin) -> Clear
-    - revisi fitur bagian jadwal ketika edit jamnya error (admin) -> Clear
-    - buat profil tiap role -> tidak ada juga tidak apa2, bisa ditambahkan jika waktunya masih ada
-    - buat tampilan dashboard -> Clear(Minimalis)
-    - harus menambahkan paginate tiap bagian seperti siswa, guru, dan sebagainya -> Clear
-    - dan seterusnya
     - fitur guru ketika tambah data harusnya ke nomor terakhir bukan di no awal (tambahkan get) 
     - fitur tambah wali ketika tambah data wali setelah mengisi form dan memencet tombol simpan , datanya tidak tesimpan di laptop saya entah kenapa tidak tersimpan terus. 
-    - fitur siswa ketika tambah data harusnya ke nomor terakhir bukan di no awal
+    - fitur siswa ketika tambah data harusnya ke nomor terakhir bukan di no awalno
     - laporan absen tinggal nambahin presentase kehadiran
     - fitur atur mengajar tambahkan paginate, dirapihkan lagi tombolnya 
     - bagian (guru) fitur absensi kenapa tidak ada data siswa ketika akan mengabsen siswa padahal sesuai dengan jam jadwalnya
     - pengembangan tampilan dashboard dan tampilan all role  
+    - revisi siswa nama notifikasinya hapus harusnya siswa bukan guru -> clear 
+    - revisi fitur atur mengajar tambah edit 
     - seterusnya
 17. Selesai
 

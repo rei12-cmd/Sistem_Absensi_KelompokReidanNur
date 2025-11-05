@@ -13,6 +13,7 @@ class SiswaController extends Controller
 {
     public function index()
     {
+
         $siswas = Siswa::with('user')->latest()->get();
         return view('siswa.index', compact('siswas'));
     }
@@ -56,7 +57,7 @@ class SiswaController extends Controller
             'alamat' => $validated['alamat'],
         ]);
 
-        return redirect()->route('siswa.index')->with('success', 'Data guru berhasil ditambahkan!');
+        return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil ditambahkan!');
     }
 
     public function edit($id)
