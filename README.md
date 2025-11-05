@@ -24,6 +24,7 @@ KP_Sistem_Absensi
     - bagian (guru) fitur absensi kenapa tidak ada data siswa ketika akan mengabsen siswa padahal sesuai dengan jam jadwalnya -> clear
     - pengembangan tampilan dashboard dan tampilan all role  -> clear
     - revisi fitur atur mengajar tambah edit 
+    - wali itu emailnya, data unik errornya tidak muncul periksa lagi -> periksa lagi
     - seterusnya
 17. Selesai
 
