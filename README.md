@@ -22,7 +22,7 @@ KP_Sistem_Absensi
     - laporan absen tinggal nambahin presentase kehadiran
     - fitur atur mengajar tambahkan paginate, dirapihkan lagi tombolnya -> Clear
     - bagian (guru) fitur absensi kenapa tidak ada data siswa ketika akan mengabsen siswa padahal sesuai dengan jam jadwalnya -> clear
-    - pengembangan tampilan dashboard dan tampilan all role  
+    - pengembangan tampilan dashboard dan tampilan all role  -> clear
     - revisi fitur atur mengajar tambah edit 
     - seterusnya
 17. Selesai

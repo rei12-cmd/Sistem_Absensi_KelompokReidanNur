@@ -11,6 +11,7 @@ use App\Models\Jurusan;
 use App\Models\MataPelajaran;
 use App\Models\Jadwal;
 use App\Models\Absensi;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -27,6 +28,7 @@ class DashboardController extends Controller
                 'totalKelas' => Kelas::count(),
                 'totalJurusan' => Jurusan::count(),
                 'totalMapel' => MataPelajaran::count(),
+                'totalRole' => Role::count(),
             ];
 
             return view('dashboard.admin', compact('data'));

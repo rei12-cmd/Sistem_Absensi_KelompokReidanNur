@@ -20,7 +20,8 @@
                                 'jurusan' => 'bi-diagram-3',
                                 'mapel' => 'bi-book',
                                 'absensi' => 'bi-calendar-check',
-                                'wali' => 'bi-person-heart'
+                                'wali' => 'bi-person-heart',
+                                'role' => 'bi-shield-lock',
                             ];
                             $colors = [
                                 'siswa' => 'primary',
@@ -29,7 +30,8 @@
                                 'jurusan' => 'warning',
                                 'mapel' => 'danger',
                                 'absensi' => 'secondary',
-                                'wali' => 'teal'
+                                'wali' => 'teal',
+                                'role' => 'dark',
                             ];
                             $icon = $icons[$name] ?? 'bi-circle';
                             $color = $colors[$name] ?? 'dark';
