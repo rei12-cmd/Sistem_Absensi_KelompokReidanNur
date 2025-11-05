@@ -22,10 +22,11 @@ KP_Sistem_Absensi
     - laporan absen tinggal nambahin presentase kehadiran
     - fitur atur mengajar tambahkan paginate, dirapihkan lagi tombolnya -> Clear
     - bagian (guru) fitur absensi kenapa tidak ada data siswa ketika akan mengabsen siswa padahal sesuai dengan jam jadwalnya -> clear
-    - pengembangan tampilan dashboard dan tampilan all role  -> clear
+    - pengembangan tampilan dashboard all role  -> clear
     - revisi fitur atur mengajar tambah edit 
     - wali itu emailnya, data unik errornya tidak muncul periksa lagi -> clear
-    - seterusnya
+    - ganti pakai get dan order by untuk yang baru di atas bagian mapel,kelas,jurusan,
+    - bagian (guru) ketika absen masih pakai hari baru bisa absen
 17. Selesai
 
 ## Catatan
