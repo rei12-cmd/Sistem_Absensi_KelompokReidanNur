@@ -30,7 +30,7 @@
         @if(session('error'))   <div class="alert alert-danger">{{ session('error') }}</div> @endif
 
         <div class="table-responsive">
-            <table class="table table-bordered table-striped">
+            <table id="index-table" class="table table-bordered table-striped">
                 <thead class="table-light">
                     <tr>
                         <th style="width:50px">No</th>
@@ -126,3 +126,18 @@
   </div>
 </div>
 @endsection
+
+
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+@endpush
+
+@push('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#index-table').DataTable();
+        });
+    </script>
+@endpush
