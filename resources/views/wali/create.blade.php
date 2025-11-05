@@ -11,22 +11,23 @@
     @csrf
     <div class="mb-3">
         <label>Nama</label>
-        <input type="text" name="nama" class="form-control" required>
+        <input type="text" name="nama" class="form-control" required value="{{ old(key: 'nama') }}">
         @error('nama')<small class="text-danger">{{ $message }}</small>@enderror
     </div>
     <div class="mb-3">
         <label>Username</label>
-        <input type="text" name="username" class="form-control" required>
+        <input type="text" name="username" class="form-control" required value="{{ old('username') }}">
         @error('username')<small class="text-danger">{{ $message }}</small>@enderror
     </div>
     <div class="mb-3">
         <label>Email</label>
-        <input type="email" name="email" class="form-control" required>
+        <input type="email" name="email" class="form-control" required value="{{ old('email') }}">
         @error('email')<small class="text-danger">{{ $message }}</small>@enderror
     </div>
     <div class="mb-3">
         <label>Password</label>
         <input type="password" name="password" class="form-control" required>
+        @error('password')<small class="text-danger">{{ $message }}</small>@enderror
     </div>
     <div class="mb-3">
         <label>Konfirmasi Password</label>
@@ -34,12 +35,12 @@
     </div>
     <div class="mb-3">
         <label>Telepon</label>
-        <input type="text" name="telepon" class="form-control">
+        <input type="text" name="telepon" class="form-control" value="{{ old('telepon') }}">
         @error('telepon')<small class="text-danger">{{ $message }}</small>@enderror
     </div>
     <div class="mb-3">
         <label>Alamat</label>
-        <input type="text" name="alamat" class="form-control">
+        <input type="text" name="alamat" class="form-control" value="{{ old('alamat') }}">
     </div>
     <div class="mb-3">
         <label>Pilih Siswa (bisa lebih dari satu)</label>
