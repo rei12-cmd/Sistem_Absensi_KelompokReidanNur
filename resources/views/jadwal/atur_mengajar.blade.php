@@ -15,9 +15,9 @@
 
 @section('content')
 <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
+    <div class="card-header">
         <h3 class="card-title">Daftar Relasi Guru - Mapel - Kelas</h3>
-        <div>
+        <div class="float-end">
             <a href="{{ route('jadwal.index') }}" class="btn btn-sm btn-secondary me-2">Kembali ke Jadwal</a>
             <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahRelasi">
                 <i class="bi bi-plus-circle"></i> Tambah
