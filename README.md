@@ -18,7 +18,7 @@ KP_Sistem_Absensi
 14. Dashboard
 15. Checking All
 16. Revisi (Jika diperlukan)
-    - fitur tambah wali ketika tambah data wali setelah mengisi form dan memencet tombol simpan , datanya tidak tesimpan di laptop saya entah kenapa tidak tersimpan terus. 
+    - fitur tambah wali ketika tambah data wali setelah mengisi form dan memencet tombol simpan , datanya tidak tesimpan di laptop saya entah kenapa tidak tersimpan terus. -> Clear
     - fitur siswa ketika tambah data harusnya ke nomor terakhir bukan di no awalno
     - laporan absen tinggal nambahin presentase kehadiran
     - fitur atur mengajar tambahkan paginate, dirapihkan lagi tombolnya 

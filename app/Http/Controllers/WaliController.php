@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Wali;
 use App\Models\Siswa;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -37,8 +38,9 @@ class WaliController extends Controller
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'wali',
         ]);
+
+        $user->assignRole('wali');
 
         $wali = Wali::create([
             'user_id' => $user->id,
