@@ -18,9 +18,9 @@ KP_Sistem_Absensi
 14. Dashboard
 15. Checking All
 16. Revisi (Jika diperlukan)
-    - perbaiki tampilan dashboard guru 
     - revisi fitur atur mengajar tambah edit 
-    - perbaiki tampilan all role 
+    - setelah absensi ada status
+    
 17. Selesai
 
 ## Catatan
