@@ -16,12 +16,18 @@ class KelasController extends Controller
      */
     public function index(): View
     {
-        $kelas = Kelas::with('jurusan')->get(); // Ambil kelas beserta jurusan
-        $jadwals = Jadwal::with(['guruMapelKelas.guru', 'guruMapelKelas.mataPelajaran', 'guruMapelKelas.kelas'])
-                        ->get(); // Ambil jadwal beserta relasinya
+        $kelas = Kelas::with('jurusan')->latest()->get();
+
+        // Ambil data jadwal dengan relasi yang dibutuhkan
+        $jadwals = Jadwal::with([
+            'guruMapelKelas.guru',
+            'guruMapelKelas.mataPelajaran',
+            'guruMapelKelas.kelas'
+        ])->get();
 
         return view('kelas.index', compact('kelas', 'jadwals'));
     }
+
 
     /**
      * Menampilkan form untuk membuat kelas baru.

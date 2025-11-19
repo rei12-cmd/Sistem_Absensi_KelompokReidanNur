@@ -15,11 +15,12 @@ class MataPelajaranController extends Controller
      */
     public function index(): View
     {
-        // Jika model MataPelajaran memiliki relasi (misalnya ke GuruMapel atau Kelas), tambahkan di sini.
-        // Misal: 'guruMapelKelas.guru', 'guruMapelKelas.kelas'
-        $mapels = MataPelajaran::with([])->get(); // pakai get() seperti permintaanmu
+        $mapels = MataPelajaran::latest()->get();
 
         return view('mapel.index', compact('mapels'));
+        // Jika model MataPelajaran memiliki relasi (misalnya ke GuruMapel atau Kelas), tambahkan di sini.
+        // Misal: 'guruMapelKelas.guru', 'guruMapelKelas.kelas'
+
     }
 
     /**

@@ -15,10 +15,10 @@ class JurusanController extends Controller
      */
     public function index(): View
     {
-        // Ambil semua data jurusan (tanpa orderBy)
-        $jurusan = Jurusan::get();
+         $jurusan = Jurusan::latest()->get();
 
         return view('jurusan.index', compact('jurusan'));
+
     }
 
     /**

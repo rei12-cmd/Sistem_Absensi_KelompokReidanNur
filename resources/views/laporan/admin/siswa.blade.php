@@ -23,7 +23,7 @@
                 <div class="card-header">
                     <h4 class="card-title mb-0">Detail Absensi: {{ $siswa->nama }}</h4>
                     <small>
-                        Kelas: <strong>{{ $siswa->kelas->nama }}</strong> | 
+                        Kelas: <strong>{{ $siswa->kelas->nama }}</strong> |
                         Jurusan: <strong>{{ $siswa->jurusan->nama }}</strong>
                     </small>
                 </div>
@@ -44,7 +44,7 @@
                             <tbody>
                                 @forelse($absensi as $key => $a)
                                     <tr>
-                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $loop->iteration }}</td>
                                         <td>{{ $a->tanggal->format('d-m-Y') }}</td>
                                         <td>{{ $a->jadwal->guruMapelKelas->mataPelajaran->nama }}</td>
                                         <td>{{ $a->jadwal->guruMapelKelas->guru->nama }}</td>
@@ -83,7 +83,6 @@
             $('#absensi-detail').DataTable({
                 "pageLength": 10,
                 "lengthMenu": [5, 10, 25, 50],
-                "order": [[1, 'desc']],
                 "language": {
                     "lengthMenu": "Tampilkan _MENU_ data per halaman",
                     "zeroRecords": "Data tidak ditemukan",

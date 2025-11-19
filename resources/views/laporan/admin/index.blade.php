@@ -70,7 +70,7 @@
                             <tbody>
                                 @forelse($absensi as $key => $a)
                                     <tr>
-                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $loop->iteration }}</td>
                                         <td>{{ $a->tanggal->format('d-m-Y') }}</td>
                                         <td>
                                             <a href="{{ route('laporan.siswa', $a->siswa->id) }}">
@@ -110,7 +110,6 @@
             $('#laporan-table').DataTable({
                 "pageLength": 10,
                 "lengthMenu": [5, 10, 25, 50, 100],
-                "order": [[1, 'desc']],
                 "language": {
                     "lengthMenu": "Tampilkan _MENU_ data per halaman",
                     "zeroRecords": "Data tidak ditemukan",

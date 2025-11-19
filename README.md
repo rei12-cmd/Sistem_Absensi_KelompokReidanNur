@@ -19,14 +19,14 @@ KP_Sistem_Absensi
 15. Checking All
 16. Revisi (Jika diperlukan)
     - fitur tambah wali ketika tambah data wali setelah mengisi form dan memencet tombol simpan , datanya tidak tesimpan di laptop saya entah kenapa tidak tersimpan terus. -> Clear
-    - laporan absen tinggal nambahin presentase kehadiran
+    - laporan absen tinggal nambahin presentase kehadiran -> clear
     - fitur atur mengajar tambahkan paginate, dirapihkan lagi tombolnya -> Clear
     - bagian (guru) fitur absensi kenapa tidak ada data siswa ketika akan mengabsen siswa padahal sesuai dengan jam jadwalnya -> clear
-    - pengembangan tampilan dashboard all role  -> clear
+    - perbaiki tampilan dashboard guru 
     - revisi fitur atur mengajar tambah edit 
     - wali itu emailnya, data unik errornya tidak muncul periksa lagi -> clear
-    - ganti pakai get dan order by untuk yang baru di atas bagian mapel,kelas,jurusan,
-    - bagian (guru) ketika absen masih pakai hari baru bisa absen
+    - ganti pakai get dan order by untuk yang baru di atas bagian mapel,kelas,jurusan,-> clear
+    - bagian (guru) ketika absen masih pakai hari baru bisa absen -> clear
 17. Selesai
 
 ## Catatan
