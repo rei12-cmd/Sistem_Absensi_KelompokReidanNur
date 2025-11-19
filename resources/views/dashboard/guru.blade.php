@@ -35,7 +35,7 @@
                     <tbody>
                         @forelse($jadwal as $key => $j)
                             <tr>
-                                <td>{{ $key + 1 }}</td>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ ucfirst($j->hari) }}</td>
                                 <td>{{ $j->guruMapelKelas->mataPelajaran->nama }}</td>
                                 <td>{{ $j->guruMapelKelas->kelas->nama }}</td>
@@ -65,7 +65,6 @@
             $('#jadwal-guru').DataTable({
                 "pageLength": 10,
                 "lengthMenu": [5, 10, 25, 50],
-                "order": [[1, 'asc']],
                 "language": {
                     "lengthMenu": "Tampilkan _MENU_ data per halaman",
                     "zeroRecords": "Tidak ada jadwal ditemukan",
