@@ -77,12 +77,10 @@
             <!--begin::Brand Link-->
             <a href="{{ Route::has('dashboard') ? route('dashboard') : '#' }}" class="brand-link">
                 <!--begin::Brand Image-->
-                <img
-                        src="{{ asset('img/AdminLTELogo.png') }}"
-                        alt="AdminLTE Logo"
-                        class="brand-image opacity-75 shadow"
-                />
-                <!--end::Brand Image-->
+                <img src="{{ asset('img/Logo_SMK.jpeg') }}"
+                alt="Logo Absensi"
+                class="brand-image opacity-75 shadow"
+                style="width:40px; height:40px; object-fit:contain;" />
                 <!--begin::Brand Text-->
                 <span class="brand-text fw-light">Absensi</span>
                 <!--end::Brand Text-->
@@ -103,7 +101,7 @@
 
                     <li class="nav-item">
                         <a href="{{ Route::has('dashboard') ? route('dashboard') : '#' }}" class="nav-link {{ setActive(['dashboard']) }}">
-                            <i class="bi bi-speedometer"></i>
+                            <i class="bi bi-file-post"></i>
                             <p>Dashboard</p>
                         </a>
                     </li>
@@ -155,7 +153,7 @@
 
                     <li class="nav-item {{ setMenuOpen(['jurusan.index', 'jurusan.create', 'jurusan.edit', 'kelas.index', 'kelas.create', 'kelas.edit', 'guru.index', 'guru', 'siswa.index', 'siswa.create', 'siswa.edit', 'wali.index', 'wali.create', 'wali.edit',  'wali', 'mapel']) }}">
                         <a href="#" class="nav-link {{ setActive(['jurusan.index','kelas.index','guru','guru.index','siswa.index', 'siswa.create', 'siswa.edit', 'wali.index', 'wali.create', 'wali.edit', 'mapel']) }}">
-                            <i class="nbi bi-clipboard-data"></i>
+                            <i class="bi bi-folder2-open"></i>
                             <p>
                                 Master Data
                                 <i class="nav-arrow bi bi-chevron-right"></i>
@@ -166,7 +164,7 @@
                             <li class="nav-item">
                                 {{-- gunakan url aman --}}
                                 <a href="{{ $jurusanUrl }}" class="nav-link {{ setActive(['jurusan.index', 'jurusan.create', 'jurusan.edit','jurusan']) }}">
-                                    <i class="bi bi-heart-arrow"></i>
+                                    <i class="bi bi-caret-right-fill"></i>
                                     <p>Jurusan</p>
                                 </a>
                             </li>
@@ -175,7 +173,7 @@
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
                                 <a href="{{ $kelasUrl }}" class="nav-link {{ setActive(['kelas.index', 'kelas.create', 'kelas.edit','kelas']) }}">
-                                    <i class="bi bi-heart-arrow"></i>
+                                    <i class="bi bi-caret-right-fill"></i>
                                     <p>Kelas</p>
                                 </a>
                             </li>
@@ -185,7 +183,7 @@
                             <li class="nav-item">
                                 {{-- guru link aman: akan memilih route('guru.index') atau route('guru') bila tersedia --}}
                                 <a href="{{ $guruUrl }}" class="nav-link {{ setActive(['guru','guru.index','guru.create','guru.edit']) }}">
-                                    <i class="bi bi-heart-arrow"></i>
+                                    <i class="bi bi-caret-right-fill"></i>
                                     <p>Guru</p>
                                 </a>
                             </li>
@@ -194,7 +192,7 @@
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
                                 <a href="{{ $siswaUrl }}" class="nav-link {{ setActive(['siswa','siswa.index','siswa.create','siswa.edit']) }}">
-                                    <i class="bi bi-heart-arrow"></i>
+                                    <i class="bi bi-caret-right-fill"></i>
                                     <p>Siswa</p>
                                 </a>
                             </li>
@@ -203,7 +201,7 @@
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
                                 <a href="{{ $waliUrl }}" class="nav-link {{ setActive(['wali','wali.index','wali.create','wali.edit']) }}">
-                                    <i class="bi bi-heart-arrow"></i>
+                                    <i class="bi bi-caret-right-fill"></i>
                                     <p>Wali</p>
                                 </a>
                             </li>
@@ -212,7 +210,7 @@
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
                                 <a href="{{ $mapelUrl }}" class="nav-link {{ setActive(['mapel','mapel.index','mapel.create','mapel.edit']) }}">
-                                    <i class="bi bi-heart-arrow"></i>
+                                    <i class="bi bi-caret-right-fill"></i>
                                     <p>Mata Pelajaran</p>
                                 </a>
                             </li>
@@ -221,7 +219,7 @@
 
                     <li class="nav-item">
                         <a href="{{ $jadwalUrl }}" class="nav-link {{ setActive(['jadwal','jadwal.index','jadwal.create','jadwal.edit']) }}">
-                            <i class="bi bi-kanban"></i>
+                            <i class="bi bi-calendar2-event-fill"></i>
                             <p>Jadwal</p>
                         </a>
                     </li>
@@ -246,7 +244,7 @@
                     @hasanyrole('admin')
                         <li class="nav-item">
                             <a href="{{ route('laporan.index') }}" class="nav-link {{ setActive(['laporan.index', 'laporan.siswa']) }}">
-                                <i class="bi bi-info-lg"></i>
+                                <i class="bi bi-file-text-fill"></i>
                                 <p>Laporan Absensi</p>
                             </a>
                         </li>
@@ -255,7 +253,7 @@
                     @hasanyrole('guru')
                         <li class="nav-item">
                             <a href="{{ route('guru.laporan.index') }}" class="nav-link {{ setActive(['guru.laporan.index', 'guru.laporan.kelas', 'guru.laporan.siswa']) }}">
-                                <i class="bi bi-info-lg"></i>
+                                <i class="bi bi-file-text-fill"></i>
                                 <p>Laporan Absensi</p>
                             </a>
                         </li>
@@ -264,7 +262,7 @@
                     @if (auth()->user()->hasRole('siswa'))
                         <li class="nav-item">
                             <a href="{{ route('absensiSaya') }}" class="nav-link {{ setActive(['absensiSaya']) }}">
-                                <i class="bi bi-info-lg"></i>
+                                <i class="bi bi-file-person-fill"></i>
                                 <p>Absensi Saya</p>
                             </a>
                         </li>
@@ -273,7 +271,7 @@
                     @if (auth()->user()->hasRole('wali'))
                         <li class="nav-item">
                             <a href="{{ route('absensiAnakSaya.index') }}" class="nav-link {{ setActive(['absensiAnakSaya.index', 'absensiAnakSaya.show']) }}">
-                                <i class="bi bi-info-lg"></i>
+                                <i class="bi bi-file-person-fill"></i>
                                 <p>Absensi Anak Saya</p>
                             </a>
                         </li>
@@ -335,7 +333,7 @@
               All rights reserved.
             </div>
             <div class="col-12 col-md-6 text-center text-md-end">
-              ITG
+              SMK ASSALAM SAMARANG
             </div>
           </div>
         </div>

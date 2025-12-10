@@ -5,6 +5,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Absensi | Login</title>
+    <div class="text-center mb-2">
+    <img src="{{ asset('img/Logo_SMK.jpeg') }}"
+         alt="Logo"
+         class="mb-2"
+         style="width: 70px; height: 70px; object-fit: contain;">
+    </div>
     <!--begin::Fonts-->
     <link
             rel="stylesheet"

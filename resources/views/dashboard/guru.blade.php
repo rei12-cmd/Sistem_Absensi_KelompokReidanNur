@@ -16,10 +16,13 @@
 @endsection
 
 @section('content')
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <h4 class="fw-bold mb-2">Selamat Datang, {{ $guru->nama }}</h4>
+    <div class="card shadow-sm text-bg-info ">
+        <div class="card-header">
+<h4 class="fw-bold mb-2">Selamat Datang, {{ $guru->nama }}</h4>
             <p class="text-muted mb-4">Berikut adalah jadwal mengajar Anda minggu ini.</p>
+
+        </div>
+        <div class="card-body">
 
             <div class="table-responsive">
                 <table id="jadwal-guru" class="table table-bordered table-striped align-middle">

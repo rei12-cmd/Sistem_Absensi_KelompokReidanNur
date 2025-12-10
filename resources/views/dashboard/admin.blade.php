@@ -24,21 +24,21 @@
                                 'role' => 'bi-shield-lock',
                             ];
                             $colors = [
-                                'siswa' => 'primary',
+                                'siswa' => 'warning',
                                 'guru' => 'success',
                                 'kelas' => 'info',
-                                'jurusan' => 'warning',
+                                'jurusan' => 'dark',
                                 'mapel' => 'danger',
                                 'absensi' => 'secondary',
                                 'wali' => 'teal',
-                                'role' => 'dark',
+                                'role' => 'primary',
                             ];
                             $icon = $icons[$name] ?? 'bi-circle';
                             $color = $colors[$name] ?? 'dark';
                         @endphp
 
                         <div class="col-md-4 col-lg-3">
-                            <div class="card border-0 shadow-sm rounded-4 hover-card">
+                            <div class="card border-0 shadow-sm rounded-4 hover-card {{ $color }}">
                                 <div class="card-body text-center py-4">
                                     <div class="mb-3 text-{{ $color }}">
                                         <i class="bi {{ $icon }} display-5"></i>
@@ -56,9 +56,14 @@
 </section>
 
 <style>
+    .bg-orange {
+    background-color: #ff7f00 !important;
+}
+
+
     .hover-card {
         transition: all 0.3s ease;
-        background: #fff;
+        background: #e6d1d1;
     }
     .hover-card:hover {
         transform: translateY(-5px);

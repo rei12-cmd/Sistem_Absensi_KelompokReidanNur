@@ -18,8 +18,9 @@ KP_Sistem_Absensi
 14. Dashboard
 15. Checking All
 16. Revisi (Jika diperlukan)
-    - revisi fitur atur mengajar tambah edit 
-    - setelah absensi ada status
+    - revisi fitur atur mengajar tambah edit pada bagian jadwal (admin)
+    - logo gambar tidak muncul pada bagian login dan dashboard
+    - saya mau ubah warna card, bagaimana caranya supaya tidak ikut keubah warna card lainnya (admin) 
     
 17. Selesai
 
